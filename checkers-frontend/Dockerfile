@@ -4,10 +4,10 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm ci 
+RUN npm ci && npm run build
 
-FROM nginx:stable-alpine
-COPY --from=build-phase /app/build /bin/www
+FROM nginx:1.25.5
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
+COPY --from=build-phase /app/build /usr/share/nginx/html
+
 CMD [ "nginx", "-g", "daemon off;" ]
