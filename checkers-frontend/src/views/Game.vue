@@ -1,7 +1,7 @@
 <script setup>
 </script>
 <template>
-   <RouterLink to="/">Menu</RouterLink>
+    <!-- <RouterLink to="/">Menu</RouterLink> -->
   <main>
    
       <div class="ChatContainer">
@@ -23,18 +23,34 @@
 </template>
 <style>
     main{
+      margin: 0;
+      padding: 0;
+      height: 100vh;
       font-family: italic;
       display: grid;
       grid-template-columns: 25% 50% 25%;
-      margin: 0;
-      padding: 0;
-    }
+      
+    } 
     .ChatContainer{
-      border: 2px solid black;
+      
+      align-content: end;
+      border: 2px solid black; 
+      
     }
     .Chat{
-      display: flex;
-      justify-content: end;
+      
+    }
+
+    #content{
+      
+    }
+    .SendButton{
+      border: 1px solid blue;
+      background-color: white;
+      color: rgb(36, 161, 222);
+      font-size: 150%;
+      width: 4vw;
+      height: 3vh;
     }
     .BoardContainer{
       border: 2px solid black;
