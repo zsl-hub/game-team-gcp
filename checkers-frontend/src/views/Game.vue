@@ -1,13 +1,16 @@
 <script setup>
 </script>
 <template>
-    <!-- <RouterLink to="/">Menu</RouterLink> -->
+
+   <!-- <RouterLink to="/">Menu</RouterLink> -->
   <main>
    
+
       <div class="ChatContainer">        <div class="Chat" name="Chat">
           <input type="text" name="Content" id="content" maxlength="20">
         <input type="Submit" value="Send">
         </div>
+
       </div>
 
     
@@ -136,6 +139,7 @@
   </main>
 </template>
 <style>
+
     
 main{
     display: grid;
@@ -190,7 +194,13 @@ main{
   } 
 
 
-.ChatContainer{
+
+
+
+
+    
+    .ChatContainer{
+
       
       align-content: end;
       border: 2px solid black; 
