@@ -1,6 +1,7 @@
 <script setup>
 </script>
 <template>
+
    <!-- <RouterLink to="/">Menu</RouterLink> -->
   <main>
    
@@ -8,6 +9,8 @@
         <div class="Chat" name="Chat"></div>
         <input type="text" name="Content" id="content" maxlength="20">
         <input type="Submit" value="➤" class="SendButton">
+
+  
       </div>
       <div class="BoardContainer" name="BoardContainer">
         <div class="Board" name="Board"></div>
@@ -21,6 +24,8 @@
   </main>
 </template>
 <style>
+
+
 
     main{
       margin: 0;
