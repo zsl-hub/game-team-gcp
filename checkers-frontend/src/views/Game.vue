@@ -6,6 +6,7 @@
   <main>
    
 
+
       <div class="ChatContainer">        <div class="Chat" name="Chat">
           <input type="text" name="Content" id="content" maxlength="20">
         <input type="Submit" value="Send">
@@ -192,11 +193,6 @@ main{
 	background: black; 
   border: 1px solid white;
   } 
-
-
-
-
-
 
     
     .ChatContainer{
