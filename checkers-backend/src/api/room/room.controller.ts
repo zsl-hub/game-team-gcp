@@ -19,7 +19,7 @@ export class RoomController {
     }
 
     @Post()
-    async Add(@Body() body: createRoom): Promise<string> {
+    async add(@Body() body: createRoom): Promise<string> {
         try {
             const taskKey = await this.datastore.key('Room');
             const entity = {

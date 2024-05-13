@@ -19,7 +19,7 @@ export class GameController {
     }
 
     @Post()
-    async Add(@Body() body: createGame): Promise<string> {
+    async add(@Body() body: createGame): Promise<string> {
         try {
             const taskKey = await this.datastore.key('Game');
             const entity = {

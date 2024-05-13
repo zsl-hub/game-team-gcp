@@ -19,7 +19,7 @@ export class GameMovesController {
     }
 
     @Post()
-    async Add(@Body() body: createGameMove): Promise<string> {
+    async add(@Body() body: createGameMove): Promise<string> {
         try {
             /*{"RoomName":"Fight","StartingColor":"random"}*/
             const taskKey = await this.datastore.key('GameMovies');
