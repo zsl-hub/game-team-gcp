@@ -13,29 +13,22 @@
       <div id="Amount" name="Amount">Amount 0/2</div>
     </div>
   </div>
-
+<Card>
   <div id="Form">
     <div id="formHeader">Board</div>
-
-    <label for="CreateName">Name:</label> <input type="text" name="CreateName" id="CreateName"> <br>
-
-    <label for="ChatCheck" hidden>Chat:</label><input type="checkbox" name="ChatCheck" id="ChatCheck" hidden> <br>
-
-    <div id="Buttons">
-      Play as:
-
-      <select name="Choice" id="Choice">
-        <option>Red</option>
-        <option>Black</option>
-        <option>Random</option>
-      </select>
-    </div>
-
-    
+ 
+            <InputText name="username" id="username" v-model="value" aria-describedby="username-help" /><br>
+            <small  id="username-help">Enter your username to reset your password.</small><br><br>
+        
+                <SelectButton   name="SelectButton" v-model="value" :options="options" aria-labelledby="basic" /><br>
+<div class="CreateButtonContainer">
+  <Button name="CreateButton" class="CreateButton" label="Create" text raised /> 
+</div>
+        
   </div>
-
+</Card>
   <div id="Rules">
-    Zasady:
+    <div class="RulesText">Rules:</div>
 
     <ul>
       <li>Board 8x8</li>
@@ -48,11 +41,16 @@
   
 </template>
 
-
-
 <style>
-
+ 
+  
+  main{
+    margin: 0;
+    padding: 0;
+  }
+ 
   header{
+    height: 4vh;
     text-align: center;
     font-size: 200%;
     font-weight: bold;
@@ -61,7 +59,7 @@
   #List{
     float: left;
     width: 30%;
-    height: 100%;
+    height: 96vh;
     border: 3px solid black;
     padding: 10px;
   }
@@ -71,23 +69,11 @@
     padding: 10px;
   }
 
-  #RoomName{
-    
-  }
-
-  #Join{
-    
-  }
-
-  #Amount{
-    
-  }
-
   #Form{
+    height: 60vh;
     float: right;
-    border: 3px solid black;
     width: 70%;
-    height: 60%;
+    
     padding: 10px;
   }
 
@@ -96,20 +82,59 @@
     font-size: 150%;
     font-weight: bold;
   }
+  .CreateButtonContainer{
+    text-align: center;
+    margin-top: 32vh;
+    
+  }
+  .CreateButton{
+    border: 2px solid blue;
+    border-radius: 10px;
+    font-size: 200%;
+    width: 8vw;
+    height: 8vh;
+  }
+
+ 
 
   #Rules{
     float: right;
+    font-size: 120%;
+    
     border: 3px solid black;
     width: 70%;
-    height: 40%;
+    height: 36vh;
     padding: 10px;
+  }
+  li{
+    gap: 100px;
+  }
+  .RulesText{
+    font-size: 180%;
+    text-align: center;
   }
 
 </style>
 
-<script>
+<script setup>
   
+import SelectButton from 'primevue/selectbutton';
+
+import Button from 'primevue/button';
+
+import InputText from 'primevue/inputtext'
+
+import { ref } from 'vue';
+
+
+
+
+const options = ref(['Black', 'Red', 'Random']);
 
   
+
+
+
+
 
 </script>

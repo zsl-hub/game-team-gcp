@@ -1,28 +1,42 @@
-<script setup>
-</script>
 <template>
-
-   <!-- <RouterLink to="/">Menu</RouterLink> -->
   <main>
    
       <div class="ChatContainer">
+
         <div class="Chat" name="Chat"></div>
+
         <input type="text" name="Content" id="content" maxlength="20">
+
         <input type="Submit" value="➤" class="SendButton">
 
   
       </div>
+
+
       <div class="BoardContainer" name="BoardContainer">
+
         <div class="Board" name="Board"></div>
+
       </div>
+
+
       <div class="Options" name="Options">
+
         <label for="">Player 1</label>
+
         <input type="text" name="Player1Name" id="Player1">
+
         <label for="">Player 2</label>
+
         <input type="text" name="Player2Name" id="Player2">
+
       </div>
+
   </main>
+  
 </template>
+
+
 <style>
 
 
@@ -42,13 +56,7 @@
       border: 2px solid black; 
       
     }
-    .Chat{
-      
-    }
-
-    #content{
-      
-    }
+    
     .SendButton{
       border: 1px solid blue;
       background-color: white;
@@ -64,3 +72,10 @@
       border: 2px solid black;
     }
   </style>
+
+
+<script setup>
+
+
+
+</script>
