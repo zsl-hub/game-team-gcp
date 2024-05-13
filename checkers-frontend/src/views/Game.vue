@@ -9,6 +9,7 @@
         <div class="Chat" name="Chat"></div>
         <input type="text" name="Content" id="content" maxlength="20">
         <input type="Submit" value="➤" class="SendButton">
+        
 
   
       </div>
