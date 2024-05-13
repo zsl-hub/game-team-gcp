@@ -66,7 +66,7 @@
   </div>
 
   <div id="Rules">
-    Zasady:
+    Rules:
 
     <ul>
       <li>Board 8x8</li>
