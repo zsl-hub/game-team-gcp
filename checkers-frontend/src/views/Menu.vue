@@ -46,24 +46,17 @@
 
   <div id="Form">
     <div id="formHeader">Board</div>
-
-    <label for="CreateName">Name:</label> <input type="text" name="CreateName" id="CreateName"> <br>
-
-    <label for="ChatCheck" hidden>Chat:</label><input type="checkbox" name="ChatCheck" id="ChatCheck" hidden> <br>
-
-    <div id="Buttons">
-      Play as:
-
-      <select name="Choice" id="Choice">
-        <option>Red</option>
-        <option>Black</option>
-        <option>Random</option>
-      </select>
-    </div>
-      
-    
-    
+ 
+                <InputText name="username" id="username" v-model="value" aria-describedby="username-help" /><br>
+            <small  id="username-help">Enter your username to reset your password.</small><br><br>
+        
+                <SelectButton   name="SelectButton" v-model="value" :options="options" aria-labelledby="basic" /><br>
+            <div class="CreateButtonContainer">
+                <Button name="CreateButton" class="CreateButton" label="Create" text raised /> 
+</div>
+        
   </div>
+
 
   <div id="Rules">
     Rules:
@@ -114,10 +107,10 @@
   }
 
   #Form{
-    float: right;
-    border: 3px solid black;
-    width: 70%;
     height: 60vh;
+    float: right;
+    width: 70%;
+    
     padding: 10px;
   }
 
@@ -126,7 +119,18 @@
     font-size: 150%;
     font-weight: bold;
   }
-
+  .CreateButtonContainer{
+    text-align: center;
+    margin-top: 32vh;
+    
+  }
+  .CreateButton{
+    border: 2px solid blue;
+    border-radius: 10px;
+    font-size: 200%;
+    width: 8vw;
+    height: 8vh;
+  }
   #Rules{
     float: right;
     border: 3px solid black;
@@ -141,6 +145,12 @@
   import Card from 'primevue/card';
   import Divider from 'primevue/divider';
   import Button from 'primevue/button';
-  
+  import SelectButton from 'primevue/selectbutton';
+  import InputText from 'primevue/inputtext'
+  import { ref } from 'vue';
+  const options = ref(['Black', 'Red', 'Random']);
+
+
+
 
 </script>
