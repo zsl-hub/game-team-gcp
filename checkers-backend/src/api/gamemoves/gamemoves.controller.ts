@@ -6,7 +6,6 @@ import { createGameMove } from './gamemoves.dto'
 @Controller('api/v1/GameMoves')
 export class GameMovesController {
     constructor(private readonly api: ApiService) { }
-    constructor(private readonly api: ApiService) { }
     datastore = new Datastore({ databaseId: 'checkers-datastore', projectId: "checkers-zsl" });
 
     @Get()
@@ -31,27 +30,31 @@ export class GameMovesController {
     async add(@Body() body: createGameMove): Promise<string> {
         try {
             const taskKey = this.datastore.key('GameMove');
-            const taskKey = this.datastore.key('GameMove');
             const entity = {
                 key: taskKey,
                 data: { body },
             };
             await this.datastore.save(entity);
             return await this.api.ApiSuccessNoData();
-            return await this.api.ApiSuccessNoData();
         }
         catch (err) {throw new BadRequestException('Something bad happened')}
     }
-    
-    @Delete(":id")
-    async delete(@Param('id') id: string): Promise<string> {
+
+    @Put(':id')
+    async update(@Param('id') id: string, @Body() body: createGameMove): Promise<string> {
         try {
-            await this.api.delete(id,"GameMove")
+            const taskKey = this.datastore.key(["GameMove", parseInt(id)])
+            const entity = {
+                key: taskKey,
+                data: body
+            }
+            await this.datastore.upsert(entity);
             return await this.api.ApiSuccessNoData();
         }
-        catch (err) {console.log(err); throw new BadRequestException('Something bad happened')}
+        catch (err) {
+            throw new BadRequestException('Something bad happened')
+        }
     }
-}
     
     @Delete(":id")
     async delete(@Param('id') id: string): Promise<string> {

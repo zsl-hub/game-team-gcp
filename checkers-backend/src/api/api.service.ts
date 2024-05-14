@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import { Datastore } from '@google-cloud/datastore';
+import { createRoom } from './room/room.dto';
 
 @Injectable()
 export class ApiService {
@@ -16,9 +17,9 @@ export class ApiService {
 
     async findOne( id: string, kind: string): Promise<object> {
         try {
-            const taskKey = this.datastore.key(["Room", parseInt(id)]);
+            const taskKey = this.datastore.key([kind, parseInt(id)]);
             const res = await this.datastore.get(taskKey);
-            return res; 
+            return res[0]; 
         }
         catch (err) {console.log(err); throw new NotFoundException("Couldn't find this room")}
     }

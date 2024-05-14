@@ -1,5 +1,5 @@
 import { Datastore,  } from '@google-cloud/datastore';
-import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
 import { ApiService } from '../api.service';
 import { createRoom } from './room.dto'
 
@@ -32,12 +32,28 @@ export class RoomController {
             const taskKey = this.datastore.key('Room');
             const entity = {
                 key: taskKey,
-                data: { body },
+                data: body ,
             };
             await this.datastore.save(entity);
             return await this.api.ApiSuccessNoData();
         }
         catch (err) {throw new BadRequestException('Something bad happened')}
+    }
+
+    @Put(':id')
+    async update(@Param('id') id: string, @Body() body: createRoom): Promise<string> {
+        try {
+            const taskKey = this.datastore.key(["Room", parseInt(id)])
+            const entity = {
+                key: taskKey,
+                data: body
+            }
+            await this.datastore.upsert(entity);
+            return await this.api.ApiSuccessNoData();
+        }
+        catch (err) {
+            throw new BadRequestException('Something bad happened')
+        }
     }
 
     @Delete(":id")
