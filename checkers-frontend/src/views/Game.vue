@@ -1,144 +1,27 @@
 <template>
-
-  <!-- <RouterLink to="/">Menu</RouterLink> -->
   <main>
-
-
-
     <div class="Chat" name="Chat">
       <input type="text" name="Content" id="content" maxlength="20">
       <input type="Submit" value="Send">
 
     </div>
 
-    <div class="table">
-
-      <div class="checker RedChecker"> </div>
-      <div class="checker RedChecker"> </div>
-      <div class="checker RedChecker"> </div>
-      <div class="checker RedChecker"> </div>
-      <div class="checker RedChecker"> </div>
-      <div class="checker RedChecker"> </div>
-      <div class="checker RedChecker"> </div>
-      <div class="checker RedChecker"> </div>
-      <div class="checker RedChecker"> </div>
-      <div class="checker RedChecker"> </div>
-      <div class="checker RedChecker"> </div>
-      <div class="checker RedChecker"> </div>
-
-      <div class="checker BlackChecker"> </div>
-      <div class="checker BlackChecker"> </div>
-      <div class="checker BlackChecker"> </div>
-      <div class="checker BlackChecker"> </div>
-      <div class="checker BlackChecker"> </div>
-      <div class="checker BlackChecker"> </div>
-      <div class="checker BlackChecker"> </div>
-      <div class="checker BlackChecker"> </div>
-      <div class="checker BlackChecker"> </div>
-      <div class="checker BlackChecker"> </div>
-      <div class="checker BlackChecker"> </div>
-      <div class="checker BlackChecker"> </div>
-
-
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-
-
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-
-
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-
-
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-
-
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-
-
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-
-
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-
-
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-      <div class="square WhiteSquare"> </div>
-      <div class="square BlackSquare"> </div>
-
-    </div>
-
-
+    <div class="Board" id="Board"></div>
 
     <div class="Options">
       <div class="FirstPlayer">
-        <label for="username">1 Player </label>
+        <label for="username">1 Player: </label>
         <InputText id="FirstUsername" v-model="value" />
 
       </div>
-
 
       <div class="Surrender">
         <Button class="SurrenderButton" aria-label="Submit"> 🏳️</Button>
 
       </div>
 
-
       <div class="SecondPlayer">
-        <label for="username">2 Player</label>
+        <label for="username">2 Player: </label>
         <InputText id="SecondUsername" v-model="value" />
 
       </div>
@@ -156,52 +39,6 @@ main {
   padding: 0;
 }
 
-.square {
-  float: left;
-  width: 5rem;
-  height: 5rem;
-}
-
-.WhiteSquare {
-  background-color: #08440d;
-}
-
-.BlackSquare {
-  background-color: rgba(255, 255, 255, 0.678);
-}
-
-
-.table {
-  position: relative;
-  width: 40rem;
-  height: 40rem;
-  margin: 0 auto;
-}
-
-
-.checker {
-  top: 0.5rem;
-  left: 0.4rem;
-  width: 4rem;
-  height: 4rem;
-  border-radius: 50%;
-  position: absolute;
-  cursor: pointer;
-
-}
-
-.RedChecker {
-  background: rgb(214, 29, 29);
-  border: 1px solid black;
-
-}
-
-.BlackChecker {
-  background: black;
-  border: 1px solid white;
-}
-
-
 .ChatContainer {
   align-content: end;
   border: 2px solid black;
@@ -214,12 +51,19 @@ main {
   color: rgb(36, 161, 222);
   font-size: 150%;
 }
+.Options{
+  
+  padding-right: 50%;
+  margin-top: 25rem;
+}
 
 .FirstPlayer {
+  margin-bottom: 4rem;
   text-align: center;
 }
 
 .SecondPlayer {
+  margin-top: 4rem;
   text-align: center;
 }
 
@@ -230,11 +74,63 @@ main {
 .SurrenderButton {
   background-color: #193102;
   font-size: 200%;
+}
 
+.Board {
+  margin: auto;
+  height: 50rem;
+  max-width: 50rem;
+  width: 50rem;
+  display: grid;
+  grid-template-columns: repeat(8, 6.2rem);
+  grid-template-rows: repeat(8, 6.2rem);
+  border: 3px solid #818cf8;
+  background-color: white;
 }
 
 
+.RedPiece {
+  width: 5rem; 
+  height: 5rem; 
+  background-color: red; 
+  border-radius: 50%; 
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+}
 
+.BlackPiece {
+  width: 5rem; 
+  height: 5rem; 
+  background-color: black; 
+  border-radius: 50%; 
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+}
+
+.Piece {
+  width: 5rem; 
+  height: 5rem;
+  border-radius: 50%; 
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+}
+
+.DarkSquare {
+  background-color: rgb(189, 189, 189);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.LightSquare {
+  background-color: #08440d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 </style>
 
@@ -247,5 +143,112 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 
  
+document.addEventListener("DOMContentLoaded", function() {
     
+    const Board = document.getElementById("Board");
+
+    let currentPlayer = 'red';
+
+    initializeBoard();
+    createPiece(color);
+
+
+    function initializeBoard() {
+
+
+        for (let row = 0; row < 8; row++) {
+
+            for (let col = 0; col < 8; col++) {
+
+                        const cell = document.createElement("div");
+                
+                        cell.classList.add("cell");
+
+                if ((row + col) % 2 === 0) {
+
+                        cell.classList.add("LightSquare");
+
+                } else {
+
+                    cell.classList.add("DarkSquare");
+
+
+                    if (row < 3) {
+                        
+                            cell.classList.add("occupied");
+
+                            cell.dataset.color = 'black';
+
+                            cell.appendChild(createPiece('Black'));
+
+                    } else if (row > 4) {
+                        
+                             cell.classList.add("occupied");
+
+                             cell.dataset.color = 'red';
+
+                             cell.appendChild(createPiece('Red'));
+
+                    }
+
+                }
+
+                cell.dataset.row = row;
+
+                cell.dataset.col = col;
+
+                cell.addEventListener("click", cellClicked);
+
+                Board.appendChild(cell);
+
+            }
+
+        }
+
+
+    }
+
+  
+    function createPiece(color) {
+
+        const Piece = document.createElement("div");
+
+        Piece.classList.add("Piece");
+
+        Piece.classList.add(color + "Piece");
+
+        return Piece;
+
+    }
+
+
+    function cellClicked() {
+       
+       const clickedCell = this;
+       
+       const isOccupied = clickedCell.classList.contains("occupied");
+       
+       const isAvailableMove = clickedCell.classList.contains("available-move");
+       
+
+       if (isOccupied && clickedCell.dataset.color === currentPlayer) {
+           
+                selectPiece(clickedCell);
+
+       } else if (isAvailableMove) {
+
+           movePiece(clickedCell);
+
+       } else {
+           
+           clearSelection();
+
+           switchPlayer();
+       }
+
+          
+   }
+
+
+  });
 </script>
