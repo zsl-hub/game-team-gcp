@@ -6,7 +6,6 @@ import { createGame } from './game.dto'
 @Controller('api/v1/Game')
 export class GameController {
     constructor(private readonly api: ApiService) { }
-    constructor(private readonly api: ApiService) { }
     datastore = new Datastore({ databaseId: 'checkers-datastore', projectId: "checkers-zsl" });
 
     @Get()
@@ -14,10 +13,8 @@ export class GameController {
         try {
             const result = await this.api.findAll("Game")
             return await this.api.ApiSuccessData({ result })
-            const result = await this.api.findAll("Game")
-            return await this.api.ApiSuccessData({ result })
         }
-        catch (err) { throw new NotFoundException("Couldn't find all games")}
+        catch (err) { throw new NotFoundException("Couldn't find all games") }
     }
 
     @Get(":id")
@@ -26,40 +23,45 @@ export class GameController {
             const result = await this.api.findOne(id, "Game")
             return await this.api.ApiSuccessData({ result })
         }
-        catch (err) { throw new NotFoundException("Couldn't find all gamemoves")}
+        catch (err) { throw new NotFoundException("Couldn't find all gamemoves") }
     }
 
     @Post()
     async add(@Body() body: createGame): Promise<string> {
         try {
-            const taskKey =  this.datastore.key('Game');
-            const taskKey =  this.datastore.key('Game');
+            const taskKey = this.datastore.key('Game');
             const entity = {
                 key: taskKey,
                 data: { body },
             };
             await this.datastore.save(entity);
             return await this.api.ApiSuccessNoData();
+        }
+        catch (err) { throw new BadRequestException('Something bad happened') }
+    }
+
+    @Put(':id')
+    async update(@Param('id') id: string, @Body() body: createGame): Promise<string> {
+        try {
+            const taskKey = this.datastore.key(["Game", parseInt(id)])
+            const entity = {
+                key: taskKey,
+                data: body
+            }
+            await this.datastore.upsert(entity);
             return await this.api.ApiSuccessNoData();
         }
-        catch (err) {throw new BadRequestException('Something bad happened')}
+        catch (err) {
+            throw new BadRequestException('Something bad happened')
+        }
     }
-    
+
     @Delete(":id")
     async delete(@Param('id') id: string): Promise<string> {
         try {
-            await this.api.delete(id,"Game")
+            await this.api.delete(id, "Game")
             return await this.api.ApiSuccessNoData();
         }
-        catch (err) {console.log(err); throw new BadRequestException('Something bad happened')}
-    }
-    
-    @Delete(":id")
-    async delete(@Param('id') id: string): Promise<string> {
-        try {
-            await this.api.delete(id,"Game")
-            return await this.api.ApiSuccessNoData();
-        }
-        catch (err) {console.log(err); throw new BadRequestException('Something bad happened')}
+        catch (err) { console.log(err); throw new BadRequestException('Something bad happened') }
     }
 }
