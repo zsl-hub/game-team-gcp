@@ -32,7 +32,7 @@ export class GameMovesController {
             const taskKey = this.datastore.key('GameMove');
             const entity = {
                 key: taskKey,
-                data: { body },
+                data: body,
             };
             await this.datastore.save(entity);
             return await this.api.ApiSuccessNoData();
