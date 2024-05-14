@@ -1,5 +1,5 @@
 import { Datastore } from '@google-cloud/datastore';
-import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
 import { ApiService } from '../api.service';
 import { createGame } from './game.dto'
 
@@ -15,6 +15,15 @@ export class GameController {
             return await this.api.ApiSuccessData({ result })
         }
         catch (err) { throw new NotFoundException("Couldn't find all games")}
+    }
+
+    @Get(":id")
+    async findOne(@Param('id') id: string): Promise<object> {
+        try {
+            const result = await this.api.findOne(id, "Game")
+            return await this.api.ApiSuccessData({ result })
+        }
+        catch (err) { throw new NotFoundException("Couldn't find all gamemoves")}
     }
 
     @Post()

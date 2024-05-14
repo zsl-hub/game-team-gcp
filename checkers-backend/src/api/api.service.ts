@@ -1,10 +1,9 @@
-import { BadRequestException, Body, Injectable, NotFoundException, Param } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import { Datastore } from '@google-cloud/datastore';
 
 @Injectable()
 export class ApiService {
     datastore = new Datastore({ databaseId: 'checkers-datastore', projectId: "checkers-zsl" });
-    constructor(private readonly apiService: ApiService) { }
 
     async findAll(kind: string): Promise<object> {
         try {
@@ -15,11 +14,20 @@ export class ApiService {
         catch (err) { throw new NotFoundException("Couldn't find all rooms")}
     }
 
-    async delete(@Param('id') id: string, kind: string): Promise<string> {
+    async findOne( id: string, kind: string): Promise<object> {
+        try {
+            const taskKey = this.datastore.key(["Room", parseInt(id)]);
+            const res = await this.datastore.get(taskKey);
+            return res; 
+        }
+        catch (err) {console.log(err); throw new NotFoundException("Couldn't find this room")}
+    }
+
+    async delete( id: string, kind: string): Promise<string> {
         try {
             const taskKey = this.datastore.key(["Room", parseInt(id)]);
             await this.datastore.delete(taskKey);
-            return await "success"
+            return "success"
         }
         catch (err) {console.log(err); throw new BadRequestException('Something bad happened')}
     }

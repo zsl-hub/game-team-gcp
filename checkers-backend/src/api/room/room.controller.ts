@@ -17,6 +17,15 @@ export class RoomController {
         catch (err) { throw new NotFoundException("Couldn't find all rooms")}
     }
 
+    @Get(":id")
+    async findOne(@Param('id') id: string): Promise<object> {
+        try {
+            const result = await this.api.findOne(id, "Room")
+            return await this.api.ApiSuccessData({ result })
+        }
+        catch (err) { throw new NotFoundException("Couldn't find all gamemoves")}
+    }
+
     @Post()
     async add(@Body() body: createRoom): Promise<string> {
         try {
