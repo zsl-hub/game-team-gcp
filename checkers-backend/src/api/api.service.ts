@@ -26,7 +26,7 @@ export class ApiService {
 
     async delete( id: string, kind: string): Promise<string> {
         try {
-            const taskKey = this.datastore.key(["Room", parseInt(id)]);
+            const taskKey = this.datastore.key([kind, parseInt(id)]);
             await this.datastore.delete(taskKey);
             return "success"
         }

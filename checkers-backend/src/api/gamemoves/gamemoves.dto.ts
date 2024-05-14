@@ -8,6 +8,6 @@ export class createGameMove
 {
     gameId: number;
     current: object;
-    possible: object;
+    possible: string[];
     onMove: string;
 }
