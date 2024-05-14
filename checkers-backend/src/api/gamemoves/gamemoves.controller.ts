@@ -11,7 +11,7 @@ export class GameMovesController {
     @Get()
     async findAll(): Promise<object> {
         try {
-            const result = await this.api.findAll("GameMove")
+            const result = await this.api.findAll("GameMoves")
             return await this.api.ApiSuccessData({ result })
         }
         catch (err) { throw new NotFoundException("Couldn't find all gamemoves")}
@@ -20,7 +20,7 @@ export class GameMovesController {
     @Get(":id")
     async findOne(@Param('id') id: string): Promise<object> {
         try {
-            const result = await this.api.findOne(id, "GameMove")
+            const result = await this.api.findOne(id, "GameMoves")
             return await this.api.ApiSuccessData({ result })
         }
         catch (err) { throw new NotFoundException("Couldn't find all gamemoves")}
@@ -29,10 +29,10 @@ export class GameMovesController {
     @Post()
     async add(@Body() body: createGameMove): Promise<string> {
         try {
-            const taskKey = this.datastore.key('GameMove');
+            const taskKey = this.datastore.key('GameMoves');
             const entity = {
                 key: taskKey,
-                data: { body },
+                data: body,
             };
             await this.datastore.save(entity);
             return await this.api.ApiSuccessNoData();
@@ -43,7 +43,7 @@ export class GameMovesController {
     @Put(':id')
     async update(@Param('id') id: string, @Body() body: createGameMove): Promise<string> {
         try {
-            const taskKey = this.datastore.key(["GameMove", parseInt(id)])
+            const taskKey = this.datastore.key(["GameMoves", parseInt(id)])
             const entity = {
                 key: taskKey,
                 data: body
@@ -59,7 +59,7 @@ export class GameMovesController {
     @Delete(":id")
     async delete(@Param('id') id: string): Promise<string> {
         try {
-            await this.api.delete(id,"GameMove")
+            await this.api.delete(id,"GameMoves")
             return await this.api.ApiSuccessNoData();
         }
         catch (err) {console.log(err); throw new BadRequestException('Something bad happened')}

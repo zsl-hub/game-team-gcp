@@ -1,7 +1,8 @@
 enum gameResult{
-    "draw" = 0,
-    "firstWin" = 1,
-    "secondWin" = 2
+    "draw",
+    "firstWin",
+    "secondWin",
+    "ongoing", 
 }
 
 export class createGame
@@ -10,6 +11,6 @@ export class createGame
     player1Name: string;
     player2Name: string;
     gameEnded: boolean;
-    moves: string;
+    moves: string[];
     gameResult: gameResult;
 }
