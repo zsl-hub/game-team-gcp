@@ -1,4 +1,4 @@
-import { Datastore, PropertyFilter } from '@google-cloud/datastore';
+import { Datastore,  } from '@google-cloud/datastore';
 import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, Post } from '@nestjs/common';
 import { ApiService } from '../api.service';
 import { createRoom } from './room.dto'
