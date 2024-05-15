@@ -1,11 +1,10 @@
-enum color
-{
+enum color {
     "red",
     "black"
 }
 
-export class createGameMove
-{
+export class createGameMove {
+    gameMoveId: string;
     gameId: number;
     current: object;
     possible: string[];
