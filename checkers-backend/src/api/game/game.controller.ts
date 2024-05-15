@@ -44,14 +44,14 @@ export class GameController {
 
     @Put(':id')
     async update(@Param('id') id: string, @Body() body: createGame): Promise<string> {
-        try {        
+        try {
             body.gameId = id;
-            const query = this.datastore.createQuery("game").filter(new PropertyFilter("gameId","=",id));
+            const query = this.datastore.createQuery("game").filter(new PropertyFilter("gameId", "=", id));
             const res = await query.run();
             const taskKey = res[0][0][this.datastore.KEY];
             const entity = {
                 key: taskKey,
-                data: body ,
+                data: body,
             };
             await this.datastore.update(entity);
             return await this.api.ApiSuccessNoData();
@@ -64,11 +64,11 @@ export class GameController {
     @Delete(":id")
     async delete(@Param('id') id: string): Promise<string> {
         try {
-            const query = this.datastore.createQuery("game").filter(new PropertyFilter("gameId","=",id));
+            const query = this.datastore.createQuery("game").filter(new PropertyFilter("gameId", "=", id));
             const res = await query.run();
             await this.datastore.delete(res[0][0][this.datastore.KEY]);
             return await this.api.ApiSuccessNoData();
         }
-        catch (err) {console.log(err); throw new BadRequestException('Something bad happened')}
+        catch (err) { console.log(err); throw new BadRequestException('Something bad happened') }
     }
 }
