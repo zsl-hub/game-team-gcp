@@ -1,5 +1,6 @@
 <template>
   <main>
+    
     <div class="Chat" name="Chat">
       <input type="text" name="Content" id="content" maxlength="20">
       <input type="Submit" value="Send">
@@ -29,6 +30,8 @@
 
   </main>
 </template>
+
+
 <style>
 main {
   background: rgb(3, 1, 27);
@@ -51,8 +54,8 @@ main {
   color: rgb(36, 161, 222);
   font-size: 150%;
 }
-.Options{
-  
+
+.Options {
   padding-right: 50%;
   margin-top: 25rem;
 }
@@ -83,39 +86,38 @@ main {
   width: 50rem;
   display: grid;
   grid-template-columns: repeat(8, 6.2rem);
-  grid-template-rows: repeat(8, 6.2rem);
+  grid-template-rows: repeat(8, 6.21rem);
   border: 3px solid #818cf8;
   background-color: white;
 }
 
-
 .RedPiece {
-  width: 5rem; 
-  height: 5rem; 
-  background-color: red; 
-  border-radius: 50%; 
+  width: 5rem;
+  height: 5rem;
+  background-color: red;
+  border-radius: 50%;
   display: flex;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
 }
 
 .BlackPiece {
-  width: 5rem; 
-  height: 5rem; 
-  background-color: black; 
-  border-radius: 50%; 
+  width: 5rem;
+  height: 5rem;
+  background-color: black;
+  border-radius: 50%;
   display: flex;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
 }
 
 .Piece {
-  width: 5rem; 
+  width: 5rem;
   height: 5rem;
-  border-radius: 50%; 
+  border-radius: 50%;
   display: flex;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
 }
 
 .DarkSquare {
@@ -132,123 +134,115 @@ main {
   align-items: center;
 }
 
+.Selected {
+  border: 3px solid cyan;
+}
 </style>
 
 
-
 <script setup>
-
 import InputText from 'primevue/inputtext';
-
 import Button from 'primevue/button';
 
- 
-document.addEventListener("DOMContentLoaded", function() {
-    
-    const Board = document.getElementById("Board");
+document.addEventListener("DOMContentLoaded", function () {
+  const Board = document.getElementById("Board");
 
-    let currentPlayer = 'red';
+  let CurrentPlayer = 'red';
+  let SelectedCell = null;
 
-    initializeBoard();
-    createPiece(color);
+  InitializeBoard();
+  CreatePiece(color);
 
+  function InitializeBoard() {
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
 
-    function initializeBoard() {
+        if ((row + col) % 2 === 0) {
+          cell.classList.add("LightSquare");
+        }
+        else {
+          cell.classList.add("DarkSquare");
 
-
-        for (let row = 0; row < 8; row++) {
-
-            for (let col = 0; col < 8; col++) {
-
-                        const cell = document.createElement("div");
-                
-                        cell.classList.add("cell");
-
-                if ((row + col) % 2 === 0) {
-
-                        cell.classList.add("LightSquare");
-
-                } else {
-
-                    cell.classList.add("DarkSquare");
-
-
-                    if (row < 3) {
-                        
-                            cell.classList.add("occupied");
-
-                            cell.dataset.color = 'black';
-
-                            cell.appendChild(createPiece('Black'));
-
-                    } else if (row > 4) {
-                        
-                             cell.classList.add("occupied");
-
-                             cell.dataset.color = 'red';
-
-                             cell.appendChild(createPiece('Red'));
-
-                    }
-
-                }
-
-                cell.dataset.row = row;
-
-                cell.dataset.col = col;
-
-                cell.addEventListener("click", cellClicked);
-
-                Board.appendChild(cell);
-
-            }
-
+          if (row < 3) {
+            cell.classList.add("occupied");
+            cell.dataset.color = 'black';
+            cell.appendChild(CreatePiece('Black'));
+          }
+          else if (row > 4) {
+            cell.classList.add("occupied");
+            cell.dataset.color = 'red';
+            cell.appendChild(CreatePiece('Red'));
+          }
         }
 
-
+        cell.dataset.row = row;
+        cell.dataset.col = col;
+        cell.addEventListener("click", CellClicked);
+        Board.appendChild(cell);
+      }
     }
+  }
 
-  
-    function createPiece(color) {
+  function CreatePiece(color) {
+    const Piece = document.createElement("div");
+    Piece.classList.add("Piece");
+    Piece.classList.add(color + "Piece");
+    return Piece;
+  }
 
-        const Piece = document.createElement("div");
+  function CellClicked() {
+    const ClickedCell = this;
 
-        Piece.classList.add("Piece");
-
-        Piece.classList.add(color + "Piece");
-
-        return Piece;
-
+    if (SelectedCell) {
+      if (IsMoveAllowed(SelectedCell, ClickedCell)) {
+        MovePiece(SelectedCell, ClickedCell);
+        SwitchPlayer();
+      }
     }
+    else if (ClickedCell.dataset.color === CurrentPlayer) {
+      SelectPiece(ClickedCell);
+    }
+  }
 
+  function UnSelectPiece() {
+    if (SelectedCell) {
+      SelectedCell.classList.remove("Selected");
+      SelectedCell = null;
+    }
+  }
 
-    function cellClicked() {
-       
-       const clickedCell = this;
-       
-       const isOccupied = clickedCell.classList.contains("occupied");
-       
-       const isAvailableMove = clickedCell.classList.contains("available-move");
-       
+  function SelectPiece(cell) {
+    UnSelectPiece();
+    cell.classList.add("Selected");
+    SelectedCell = cell;
+  }
 
-       if (isOccupied && clickedCell.dataset.color === currentPlayer) {
-           
-                selectPiece(clickedCell);
+  function IsMoveAllowed(fromCell, toCell) {
+    const direction = CurrentPlayer === 'red' ? -1 : 1;
+    const fromRow = parseInt(fromCell.dataset.row);
+    const toRow = parseInt(toCell.dataset.row);
+    const fromCol = parseInt(fromCell.dataset.col);
+    const toCol = parseInt(toCell.dataset.col);
+    return fromRow + direction === toRow && Math.abs(fromCol - toCol) === 1;
+  }
 
-       } else if (isAvailableMove) {
+  function MovePiece(fromCell, toCell) {
+    fromCell.innerHTML = '';
+    fromCell.classList.remove('occupied');
+    fromCell.dataset.color = '';
 
-           movePiece(clickedCell);
+    const newPiece = CreatePiece(CurrentPlayer.charAt(0).toUpperCase() + CurrentPlayer.slice(1));
+    toCell.appendChild(newPiece);
+    toCell.classList.add('occupied');
+    toCell.dataset.color = CurrentPlayer;
 
-       } else {
-           
-           clearSelection();
+    UnSelectPiece();
+  }
 
-           switchPlayer();
-       }
-
-          
-   }
-
-
-  });
+  function SwitchPlayer() {
+    CurrentPlayer = CurrentPlayer === 'red' ? 'black' : 'red';
+  }
+});
 </script>
