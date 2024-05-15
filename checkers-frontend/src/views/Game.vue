@@ -16,7 +16,7 @@
       </div>
 
       <div class="Surrender">
-        <Button class="SurrenderButton" aria-label="Submit"> 🏳️</Button>
+        <RouterLink to="/"><Button class="SurrenderButton" aria-label="Submit"> 🏳️</Button></RouterLink>
 
       </div>
 
