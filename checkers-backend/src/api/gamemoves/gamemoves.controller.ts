@@ -15,7 +15,7 @@ export class GameMovesController {
             const result = await this.api.findAll("gameMove")
             return await this.api.ApiSuccessData({ result })
         }
-        catch (err) { throw new NotFoundException("Couldn't find all gamemoves")}
+        catch (err) { throw new NotFoundException("Couldn't find all gamemoves") }
     }
 
     @Get(":id")
@@ -24,7 +24,7 @@ export class GameMovesController {
             const result = await this.api.findOne(id, "gameMove")
             return await this.api.ApiSuccessData({ result })
         }
-        catch (err) { throw new NotFoundException("Couldn't find all gamemoves")}
+        catch (err) { throw new NotFoundException("Couldn't find all gamemoves") }
     }
 
     @Post()
@@ -39,19 +39,19 @@ export class GameMovesController {
             await this.datastore.save(entity);
             return await this.api.ApiSuccessNoData();
         }
-        catch (err) {throw new BadRequestException('Something bad happened')}
+        catch (err) { throw new BadRequestException('Something bad happened') }
     }
 
     @Put(':id')
     async update(@Param('id') id: string, @Body() body: createGameMove): Promise<string> {
-        try {        
+        try {
             body.gameMoveId = id;
-            const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter("gameMoveId","=",id));
+            const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter("gameMoveId", "=", id));
             const res = await query.run();
             const taskKey = res[0][0][this.datastore.KEY];
             const entity = {
                 key: taskKey,
-                data: body ,
+                data: body,
             };
             await this.datastore.update(entity);
             return await this.api.ApiSuccessNoData();
@@ -64,11 +64,11 @@ export class GameMovesController {
     @Delete(":id")
     async delete(@Param('id') id: string): Promise<string> {
         try {
-            const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter("gameMoveId","=",id));
+            const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter("gameMoveId", "=", id));
             const res = await query.run();
             await this.datastore.delete(res[0][0][this.datastore.KEY]);
             return await this.api.ApiSuccessNoData();
         }
-        catch (err) {console.log(err); throw new BadRequestException('Something bad happened')}
+        catch (err) { console.log(err); throw new BadRequestException('Something bad happened') }
     }
 }
