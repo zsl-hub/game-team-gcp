@@ -46,7 +46,7 @@ export class GameController {
     async update(@Param('id') id: string, @Body() body: createGame): Promise<string> {
         try {        
             body.gameId = id;
-            const query = this.datastore.createQuery("game").filter(new PropertyFilter("gameMoveId","=",id));
+            const query = this.datastore.createQuery("game").filter(new PropertyFilter("gameId","=",id));
             const res = await query.run();
             const taskKey = res[0][0][this.datastore.KEY];
             const entity = {
@@ -64,7 +64,7 @@ export class GameController {
     @Delete(":id")
     async delete(@Param('id') id: string): Promise<string> {
         try {
-            const query = this.datastore.createQuery("game").filter(new PropertyFilter("gameMoveId","=",id));
+            const query = this.datastore.createQuery("game").filter(new PropertyFilter("gameId","=",id));
             const res = await query.run();
             await this.datastore.delete(res[0][0][this.datastore.KEY]);
             return await this.api.ApiSuccessNoData();
