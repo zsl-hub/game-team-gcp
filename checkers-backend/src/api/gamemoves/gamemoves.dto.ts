@@ -6,6 +6,7 @@ enum color
 
 export class createGameMove
 {
+    gameMoveId: string;
     gameId: number;
     current: object;
     possible: string[];
