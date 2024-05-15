@@ -16,7 +16,7 @@
       </div>
 
       <div class="Surrender">
-        <Button class="SurrenderButton" aria-label="Submit"> 🏳️</Button>
+        <RouterLink to="/"><Button class="SurrenderButton" aria-label="Submit"> 🏳️</Button></RouterLink>
 
       </div>
 
@@ -29,226 +29,191 @@
 
   </main>
 </template>
+
+
 <style>
-main {
-  background: rgb(3, 1, 27);
-  display: grid;
-  grid-template-columns: 25% 50% 25%;
-  width: 100%;
-  height: 100vh;
-  padding: 0;
-}
+  main {
+    background: rgb(3, 1, 27);
+    display: grid;
+    grid-template-columns: 25% 50% 25%;
+    width: 100%;
+    height: 100vh;
+    padding: 0;
+  }
 
-.ChatContainer {
-  align-content: end;
-  border: 2px solid black;
+  .ChatContainer {
+    align-content: end;
+    border: 2px solid black;
 
-}
+  }
 
-.SendButton {
-  border: 1px solid blue;
-  background-color: white;
-  color: rgb(36, 161, 222);
-  font-size: 150%;
-}
-.Options{
-  
-  padding-right: 50%;
-  margin-top: 25rem;
-}
+  .SendButton {
+    border: 1px solid blue;
+    background-color: white;
+    color: rgb(36, 161, 222);
+    font-size: 150%;
+  }
 
-.FirstPlayer {
-  margin-bottom: 4rem;
-  text-align: center;
-}
+  .Options {
+    padding-right: 50%;
+    margin-top: 25rem;
+  }
 
-.SecondPlayer {
-  margin-top: 4rem;
-  text-align: center;
-}
+  .FirstPlayer {
+    margin-bottom: 4rem;
+    text-align: center;
+  }
 
-.Surrender {
-  text-align: center;
-}
+  .SecondPlayer {
+    margin-top: 4rem;
+    text-align: center;
+  }
 
-.SurrenderButton {
-  background-color: #193102;
-  font-size: 200%;
-}
+  .Surrender {
+    text-align: center;
+  }
 
-.Board {
-  margin: auto;
-  height: 50rem;
-  max-width: 50rem;
-  width: 50rem;
-  display: grid;
-  grid-template-columns: repeat(8, 6.2rem);
-  grid-template-rows: repeat(8, 6.2rem);
-  border: 3px solid #818cf8;
-  background-color: white;
-}
+  .SurrenderButton {
+    background-color: #193102;
+    font-size: 200%;
+  }
 
+  .Board {
+    margin: auto;
+    height: 50rem;
+    max-width: 50rem;
+    width: 50rem;
+    display: grid;
+    grid-template-columns: repeat(8, 6.2rem);
+    grid-template-rows: repeat(8, 6.21rem);
+    border: 3px solid #818cf8;
+    background-color: white;
+  }
 
-.RedPiece {
-  width: 5rem; 
-  height: 5rem; 
-  background-color: red; 
-  border-radius: 50%; 
-  display: flex;
-  justify-content: center; 
-  align-items: center; 
-}
+  .RedPiece {
+    width: 5rem;
+    height: 5rem;
+    background-color: red;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-.BlackPiece {
-  width: 5rem; 
-  height: 5rem; 
-  background-color: black; 
-  border-radius: 50%; 
-  display: flex;
-  justify-content: center; 
-  align-items: center; 
-}
+  .BlackPiece {
+    width: 5rem;
+    height: 5rem;
+    background-color: black;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-.Piece {
-  width: 5rem; 
-  height: 5rem;
-  border-radius: 50%; 
-  display: flex;
-  justify-content: center; 
-  align-items: center; 
-}
+  .Piece {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-.DarkSquare {
-  background-color: rgb(189, 189, 189);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  .DarkSquare {
+    background-color: rgb(189, 189, 189);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-.LightSquare {
-  background-color: #08440d;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  .LightSquare {
+    background-color: #08440d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
+  .Selected{
+    border: 3px solid cyan;
+  }
 </style>
 
 
-
 <script setup>
+  import InputText from 'primevue/inputtext';
+  import Button from 'primevue/button';
 
-import InputText from 'primevue/inputtext';
-
-import Button from 'primevue/button';
-
- 
-document.addEventListener("DOMContentLoaded", function() {
-    
+  document.addEventListener("DOMContentLoaded", function () {
     const Board = document.getElementById("Board");
 
-    let currentPlayer = 'red';
+    let CurrentPlayer = 'red';
+    let SelectedCell = null;
 
-    initializeBoard();
-    createPiece(color);
+    InitializeBoard();
+    CreatePiece(color);
 
+    function InitializeBoard() {
+      for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+          const cell = document.createElement("div");
+          cell.classList.add("cell");
 
-    function initializeBoard() {
+          if ((row + col) % 2 === 0) {
+            cell.classList.add("LightSquare");
+          } 
+          else {
+            cell.classList.add("DarkSquare");
 
-
-        for (let row = 0; row < 8; row++) {
-
-            for (let col = 0; col < 8; col++) {
-
-                        const cell = document.createElement("div");
-                
-                        cell.classList.add("cell");
-
-                if ((row + col) % 2 === 0) {
-
-                        cell.classList.add("LightSquare");
-
-                } else {
-
-                    cell.classList.add("DarkSquare");
-
-
-                    if (row < 3) {
-                        
-                            cell.classList.add("occupied");
-
-                            cell.dataset.color = 'black';
-
-                            cell.appendChild(createPiece('Black'));
-
-                    } else if (row > 4) {
-                        
-                             cell.classList.add("occupied");
-
-                             cell.dataset.color = 'red';
-
-                             cell.appendChild(createPiece('Red'));
-
-                    }
-
-                }
-
-                cell.dataset.row = row;
-
-                cell.dataset.col = col;
-
-                cell.addEventListener("click", cellClicked);
-
-                Board.appendChild(cell);
-
+            if (row < 3) {
+              cell.classList.add("occupied");
+              cell.dataset.color = 'black';
+              cell.appendChild(CreatePiece('Black'));
+            } 
+            else if (row > 4) {
+              cell.classList.add("occupied");
+              cell.dataset.color = 'red';
+              cell.appendChild(CreatePiece('Red'));
             }
+          }
 
+          cell.dataset.row = row;
+          cell.dataset.col = col;
+          cell.addEventListener("click", CellClicked);
+          Board.appendChild(cell);
         }
-
-
+      }
     }
 
-  
-    function createPiece(color) {
-
-        const Piece = document.createElement("div");
-
-        Piece.classList.add("Piece");
-
-        Piece.classList.add(color + "Piece");
-
-        return Piece;
-
+    function CreatePiece(color) {
+      const Piece = document.createElement("div");
+      Piece.classList.add("Piece");
+      Piece.classList.add(color + "Piece");
+      return Piece;
     }
 
+    function CellClicked(){
+      const ClickedCell = this;
+      
+      if (ClickedCell.dataset.color === CurrentPlayer) {  
+        SelectPiece(ClickedCell);
+      }
+    }
 
-    function cellClicked() {
-       
-       const clickedCell = this;
-       
-       const isOccupied = clickedCell.classList.contains("occupied");
-       
-       const isAvailableMove = clickedCell.classList.contains("available-move");
-       
+    function UnSelectPiece() {
+      if (SelectedCell) {
+        SelectedCell.classList.remove("Selected");
+        SelectedCell = null;
+      }
+    }
 
-       if (isOccupied && clickedCell.dataset.color === currentPlayer) {
-           
-                selectPiece(clickedCell);
+    function SelectPiece(cell) {
+      UnSelectPiece();
+      cell.classList.add("Selected");
+      SelectedCell = cell;
+    }
 
-       } else if (isAvailableMove) {
+    function MovePiece(TargetCell){
 
-           movePiece(clickedCell);
-
-       } else {
-           
-           clearSelection();
-
-           switchPlayer();
-       }
-
-          
-   }
-
-
+    }
   });
 </script>
