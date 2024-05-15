@@ -194,7 +194,13 @@
     function CellClicked(){
       const ClickedCell = this;
       
-      if (ClickedCell.dataset.color === CurrentPlayer) {  
+      if (SelectedCell) {
+        if (IsMoveAllowed(SelectedCell, ClickedCell)) {
+          MovePiece(SelectedCell, ClickedCell);
+          SwitchPlayer();
+        }
+      } 
+      else if (ClickedCell.dataset.color === CurrentPlayer) {  
         SelectPiece(ClickedCell);
       }
     }
@@ -211,9 +217,31 @@
       cell.classList.add("Selected");
       SelectedCell = cell;
     }
+    
+    function IsMoveAllowed(fromCell, toCell) {
+      const direction = CurrentPlayer === 'red' ? -1 : 1;
+      const fromRow = parseInt(fromCell.dataset.row);
+      const toRow = parseInt(toCell.dataset.row);
+      const fromCol = parseInt(fromCell.dataset.col);
+      const toCol = parseInt(toCell.dataset.col);
+      return fromRow + direction === toRow && Math.abs(fromCol - toCol) === 1;
+    }
 
-    function MovePiece(TargetCell){
+    function MovePiece(fromCell, toCell) {
+      fromCell.innerHTML = '';
+      fromCell.classList.remove('occupied');
+      fromCell.dataset.color = '';
 
+      const newPiece = CreatePiece(CurrentPlayer.charAt(0).toUpperCase() + CurrentPlayer.slice(1));
+      toCell.appendChild(newPiece);
+      toCell.classList.add('occupied');
+      toCell.dataset.color = CurrentPlayer;
+
+      UnSelectPiece();
+    }
+
+    function SwitchPlayer() {
+      CurrentPlayer = CurrentPlayer === 'red' ? 'black' : 'red';
     }
   });
 </script>
