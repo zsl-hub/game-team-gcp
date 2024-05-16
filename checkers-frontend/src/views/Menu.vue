@@ -90,3 +90,68 @@ header {
   padding: 10px;
 }
 </style>
+
+<script setup>
+
+  import Card from 'primevue/card';
+  import Divider from 'primevue/divider';
+  import Button from 'primevue/button';
+
+  import SelectButton from 'primevue/selectbutton';
+  import InputText from 'primevue/inputtext'
+
+  import { ref } from 'vue';
+
+  const colorValues = ref(['Random', 'Red', 'Black']);
+</script>
+<script>
+  import { ref } from 'vue';
+  import io from 'socket.io-client';
+  const boardName = ref('');
+  const selectedColor = ref('');
+  export default {
+      
+    data() {
+      return {
+        messages: [],
+        socket: null // Define socket as a component property
+      };
+    },
+    
+    mounted() {
+      // Connect to the Socket.IO server
+      const socket = io('http://localhost:8080'); // Change the URL to your backend URL
+
+
+      // Listen for messages from the server
+      console.log("before");
+      socket.on('onMessage', (message) => {
+        console.log('front onMessage'),
+        this.messages.push(message),
+        socket.emit('message', {
+          msg: 'my new message',
+          content: message,
+        });
+        console.log( "0weifji0ewr", message );
+      });
+    },
+    methods:{
+      sendData(){
+        const socket = io('http://localhost:8080');
+        console.log("test connect");
+        console.log(this);
+        const boardName = this.boardName;
+        const playerColor = this.selectColor;
+        console.log("color: ", playerColor);
+        console.log("baordname: ", boardName);
+        socket.emit('boardCreationData', {
+          msg: 'trying',
+          content: playerColor,
+          board: boardName
+        });
+      }
+  }
+}
+
+
+</script>
