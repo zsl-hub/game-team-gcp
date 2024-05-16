@@ -133,7 +133,7 @@
     align-items: center;
   }
 
-  .Selected{
+  .Selected {
     border: 3px solid cyan;
   }
 </style>
@@ -148,7 +148,7 @@
 
     let CurrentPlayer = 'red';
     let SelectedCell = null;
-    let GameState = Array(8).fill().map(() => Array(8).fill(null)); //tablica 8x8
+    let GameState = Array(8).fill().map(() => Array(8).fill(0)); //tablica 8x8
 
     InitializeBoard();
     CreatePiece(color);
@@ -166,16 +166,16 @@
             cell.classList.add("DarkSquare");
 
             if (row < 3) {
-              cell.classList.add("occupied");
+              cell.classList.add("Occupied");
               cell.dataset.color = 'black';
               cell.appendChild(CreatePiece('Black'));
-              GameState[row][col] = 'black'; //zapisanie stanu planszy
+              GameState[row][col] = 2; //zapisanie stanu planszy
             } 
             else if (row > 4) {
-              cell.classList.add("occupied");
+              cell.classList.add("Occupied");
               cell.dataset.color = 'red';
               cell.appendChild(CreatePiece('Red'));
-              GameState[row][col] = 'red'; //zapisanie stanu planszy
+              GameState[row][col] = 1; //zapisanie stanu planszy
             }
           }
 
@@ -234,7 +234,7 @@
       const toRow = parseInt(toCell.dataset.row);
       const fromCol = parseInt(fromCell.dataset.col);
       const toCol = parseInt(toCell.dataset.col);
-      return fromRow + direction === toRow && Math.abs(fromCol - toCol) === 1;
+      return fromRow + direction === toRow && Math.abs(fromCol - toCol) === 1 && GameState[toRow][toCol] === 0;
     }
 
     function MovePiece(fromCell, toCell) {
@@ -244,15 +244,15 @@
       const toCol = parseInt(toCell.dataset.col);
 
       fromCell.innerHTML = '';
-      fromCell.classList.remove('occupied');
+      fromCell.classList.remove('Occupied');
       fromCell.dataset.color = '';
-      GameState[fromRow][fromCol] = null; // aktualizacja stanu planszy
+      GameState[fromRow][fromCol] = 0; // aktualizacja stanu planszy
 
       const newPiece = CreatePiece(CurrentPlayer.charAt(0).toUpperCase() + CurrentPlayer.slice(1));
       toCell.appendChild(newPiece);
-      toCell.classList.add('occupied');
+      toCell.classList.add('Occupied');
       toCell.dataset.color = CurrentPlayer;
-      GameState[toRow][toCol] = CurrentPlayer; // aktualizacja stanu planszy
+      GameState[toRow][toCol] = CurrentPlayer === 'black' ? 2 : 1; // aktualizacja stanu planszy
 
       console.log(GameState)
 
@@ -269,10 +269,11 @@
       const toRow = parseInt(toCell.dataset.row);
       const fromCol = parseInt(fromCell.dataset.col);
       const toCol = parseInt(toCell.dataset.col);
+
       if (fromRow + 2 * direction === toRow && Math.abs(fromCol - toCol) === 2) {
         const capturedRow = (fromRow + toRow) / 2;
         const capturedCol = (fromCol + toCol) / 2;
-        return GameState[capturedRow][capturedCol] !== CurrentPlayer && GameState[capturedRow][capturedCol] !== null;
+        return GameState[capturedRow][capturedCol] !== CurrentPlayer && GameState[capturedRow][capturedCol] !== null && GameState[toRow][toCol] === 0;
       }
       return false;
     }
@@ -282,12 +283,11 @@
       const capturedCol = (parseInt(fromCell.dataset.col) + parseInt(toCell.dataset.col)) / 2;
       const capturedCell = document.querySelector(`[data-row='${capturedRow}'][data-col='${capturedCol}']`);
       capturedCell.innerHTML = '';
-      capturedCell.classList.remove('occupied');
+      capturedCell.classList.remove('Occupied');
       capturedCell.dataset.color = '';
-      GameState[capturedRow][capturedCol] = null; // aktualizacja stanu planszy
+      GameState[capturedRow][capturedCol] = 0; // aktualizacja stanu planszy
 
       MovePiece(fromCell, toCell);
-      console.log(GameState)
     }
   });
 </script>
