@@ -206,6 +206,9 @@
           CapturePiece(SelectedCell, ClickedCell);
           SwitchPlayer();
         }
+        else if (ClickedCell.dataset.color === CurrentPlayer) {
+          SelectPiece(ClickedCell);
+        }
       }
       else if (ClickedCell.dataset.color === CurrentPlayer) {
         SelectPiece(ClickedCell);
