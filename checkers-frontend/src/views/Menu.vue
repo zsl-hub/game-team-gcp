@@ -3,90 +3,14 @@
     CHECKERS
   </header>
 
-  <Card id="List">
-    <template #title>ROOM LIST</template>
-    <template #content>
-      <p class="m-0">
+  <FormAndList></FormAndList>
 
-      <div v-for="(room, index) in rooms" :key="index" id="Room">
-        <div class="Left">
-          <div class="RoomName">RoomName {{ index + 1 }}</div>
-          <div class="Amount">Players: {{ room.players }}/2</div>
-        </div>
-        <div class="Right">
-          <RouterLink to="/Game">
-            <Button label="Submit" id="Join">JOIN</Button>
-          </RouterLink>
-        </div>
-
-      </div>
-
-
-
-
-      </p>
-    </template>
-  </Card>
-
-  <Card id="Form">
-    <template #title>BOARD</template>
-    <template #content>
-      <p class="m-0">
-        <InputText name="username" id="username" aria-describedby="username-help" /><br>
-        <small id="username-help">Enter board name.</small><br><br>
-        <SelectButton name="SelectButton" v-model="value" :options="options" aria-labelledby="basic" /><br>
-      <div class="CreateButtonContainer">
-        <Button name="CreateButton" class="CreateButton" label="Create" text raised @click="createRoom()"></Button>
-      </div>
-      </p>
-    </template>
-  </Card>
-
-  <Card id="Rules">
-    <template #title>Rules</template>
-    <template #content>
-      <p class="m-0">
-      <ul>
-        <li>Board 8x8</li>
-        <li>Short moves only</li>
-        <li>Cannot capture backwards</li>
-        <li>Capture - choose any</li>
-        <li>Red is playing first</li>
-      </ul>
-      </p>
-    </template>
-
-  </Card>
+  <Rules></Rules>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import Card from 'primevue/card';
-
-import Button from 'primevue/button';
-import SelectButton from 'primevue/selectbutton';
-import InputText from 'primevue/inputtext';
-
-
-const options = ref(['Random', 'Red', 'Black']);
-
-const rooms = ref([
-
-
-]);
-const newRoomName = ref('');
-
-
-
-const createRoom = () => {
-  rooms.value.push({ name: newRoomName.value, players: 1 });
-  newRoomName.value = '';
-
-
-};
-
-
-
+import FormAndList from "../components/FormAndList.vue"
+import Rules from '../components/Rules.vue'
 
 </script>
 
