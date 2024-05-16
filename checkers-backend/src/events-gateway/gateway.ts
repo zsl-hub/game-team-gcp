@@ -2,7 +2,12 @@ import { OnModuleInit } from "@nestjs/common";
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import {Server} from 'socket.io';
 
-@WebSocketGateway()
+@WebSocketGateway({ 
+    cors: true
+    // {
+    //     origin: 'http://localhost:5173'
+    // }
+})
 export class MyGateway implements OnModuleInit{
     @WebSocketServer()
     server: Server
@@ -21,5 +26,14 @@ export class MyGateway implements OnModuleInit{
             msg: 'New Message',
             content: body,
         });
+    }
+    @SubscribeMessage('boardCreationData')
+    onBoardCreation(@MessageBody() creationData: string){
+        console.log('Server received board creation data!'),
+        console.log("creaton data: ", creationData),
+        this.server.emit('newBoardData',{
+            msg: 'boardData',
+            content: creationData,
+        })
     }
 }
