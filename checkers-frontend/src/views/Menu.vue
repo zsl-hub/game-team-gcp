@@ -50,13 +50,23 @@
     <template #content>
       <p class="m-0">
 
-        <InputText name="username" id="username" aria-describedby="username-help" /><br>
+        <InputText id="create-input" ref="boardName" type="text"  v-model="b" aria-describedby="username-help"/>
+        <br>
         <small id="username-help">Enter board name.</small><br><br>
 
-        <SelectButton name="SelectButton" v-model="value" :options="options" aria-labelledby="basic" /><br>
+        <SelectButton ref="selectedColor" v-model="selectValue" :options="colorValues" aria-labelledby="basic"/>
+          <option value=""> Select your color
+        </option>
+          <option value="Random">Random</option>
+          <option value="Red">Red</option>
+          <option value="Black">Black</option>
+        
+        
+        
+        <br>
 
         <div class="CreateButtonContainer">
-          <Button name="CreateButton" class="CreateButton" label="Create" text raised />
+          <Button class="CreateButton" label="Create" text='raised'  @click="sendData" />
         </div>
 
       </p>
@@ -169,7 +179,57 @@
   import InputText from 'primevue/inputtext'
 
   import { ref } from 'vue';
-  const value = ref('Random');
-  const options = ref(['Random', 'Red', 'Black']);
+
+  const colorValues = ref(['Random', 'Red', 'Black']);
+</script>
+<script>
+  import { ref } from 'vue';
+  import io from 'socket.io-client';
+  const boardName = ref('');
+  const selectedColor = ref('');
+  export default {
+      
+    data() {
+      return {
+        messages: [],
+        socket: null // Define socket as a component property
+      };
+    },
+    
+    mounted() {
+      // Connect to the Socket.IO server
+      const socket = io('http://localhost:8080'); // Change the URL to your backend URL
+
+
+      // Listen for messages from the server
+      console.log("before");
+      socket.on('onMessage', (message) => {
+        console.log('front onMessage'),
+        this.messages.push(message),
+        socket.emit('message', {
+          msg: 'my new message',
+          content: message,
+        });
+        console.log( "0weifji0ewr", message );
+      });
+    },
+    methods:{
+      sendData(){
+        const socket = io('http://localhost:8080');
+        console.log("test connect");
+        console.log(this);
+        const boardName = this.boardName;
+        const playerColor = this.selectColor;
+        console.log("color: ", playerColor);
+        console.log("baordname: ", boardName);
+        socket.emit('boardCreationData', {
+          msg: 'trying',
+          content: playerColor,
+          board: boardName
+        });
+      }
+  }
+}
+
 
 </script>
