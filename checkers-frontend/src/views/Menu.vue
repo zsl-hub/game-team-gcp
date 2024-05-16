@@ -8,11 +8,11 @@
     <template #title>BOARD</template>
     <template #content>
       <p class="m-0">
-        <InputText name="BoardName" id="BoardName" aria-describedby="username-help" /><br>
+        <InputText name="BoardName" id="BoardName" v-model="boardName" aria-describedby="username-help" /><br>
         <small id="username-help">Enter board name.</small><br><br>
-        <SelectButton name="SelectButton" v-model="value" :options="options" aria-labelledby="basic" /><br>
+        <SelectButton name="SelectButton" v-model="selectColor" :options="options" aria-labelledby="basic" /><br>
       <div class="CreateButtonContainer">
-        <Button name="CreateButton" class="CreateButton" label="Create" text raised @click="createRoom()"></Button>
+        <Button name="CreateButton" class="CreateButton" label="Create" text raised @click="createRoom(),newRoom()"></Button>
       </div>
       </p>
     </template>
@@ -33,8 +33,9 @@
       <div class="RoomList">
         <div v-for="(room, index) in rooms" :key="index" id="Room">
           <div class="Left">
-            <div class="RoomName">RoomName {{ index + 1 }}</div>
+            <div class="RoomName">RoomName:  {{ room.name }}</div>
             <div class="Amount">Players: {{ room.players }}/2</div>
+            Delete Room:<input type='checkbox' v-model="room.delete"/>
           </div>
           <div class="Right">
             <RouterLink to="/Game">
@@ -181,36 +182,10 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import Checkbox from 'primevue/checkbox';
 
 const options = ref(['Random', 'Red', 'Black']);
 
-const rooms = ref([]);
-const newRoomName = ref('');
-
-
-
-const createRoom = () => {
-  rooms.value.push({ name: newRoomName.value, players: 1 });
-  newRoomName.value = '';
-
-
-};
-const DeleteRoom = () => {
-  const index = rooms.value.findIndex(room => room.name === newRoomName.value);
-  if (index !== -1) {
-    rooms.value.splice(index, 1);
-  }
-  newRoomName.value = '';
-};
-
-// onMounted(async () => {
-//   try {
-//     const response = await axios.get('http://localhost:8080/api/v1/getAllAvailableRooms');
-//     rooms.value = response.data;
-//   } catch (error) {
-//     console.error("Couldn't get all available rooms", error);
-//   }
-// });
 
 </script>
 
@@ -231,12 +206,14 @@ const colorValues = ref(['Random', 'Red', 'Black']);
 
 
 // };
+var checkedIndexes = [];
 
 
 export default {
 
   data() {
     return {
+      rooms: rooms,
       messages: [],
       socket: null // Define socket as a component property
     };
@@ -260,10 +237,32 @@ export default {
     });
   },
   methods: {
+    DeleteRoom() {
+      console.log('deletion started');
+      this.rooms.forEach((rm, index) => {
+        if (rm.delete) {
+          checkedIndexes.push(index);
+        }
+      });
+      console.log('deletion in progres', checkedIndexes);
+
+      // Iterate over the checked indexes and remove corresponding rooms
+      checkedIndexes.forEach((index) => {
+      // Use `rooms` instead of `rooms.value` if you're directly accessing it from Vue data
+        rooms.value.splice(index, 1);
+      });
+
+
+      // const index = rooms.value.findIndex(room => room.name === newRoomName.value);
+      // if (index !== -1) {
+      //   rooms.value.splice(index, 1);
+      // }
+      // newRoomName.value = '';
+    },
     createRoom() {
       console.log('testing this: ', this)
-      rooms.value.push({ name: this.boardName, players: 1 });
-      // newRoomName.value = '';
+      rooms.value.push({ name: this.boardName, players: 1, delete: false});
+      console.log()
 
     },
     newRoom() {
