@@ -24,7 +24,7 @@
     <template #content>
       <p class="m-1">
 
-        <div class="DeleteButtonContainer">
+      <div class="DeleteButtonContainer">
         <Button name="DeleteButton" class="DeleteButton" label="Delete my Room" text raised
           @click="DeleteRoom()"></Button>
 
@@ -43,10 +43,10 @@
           </div>
         </div>
 
-      </div>   
+      </div>
 
       </p>
-      
+
     </template>
 
   </Card>
@@ -90,12 +90,12 @@ header {
 }
 
 #List {
-  
+
   float: left;
   width: 30%;
   height: 96vh;
   padding: 10px;
-  overflow-y:scroll;
+  overflow-y: scroll;
   border: 1px solid #818cf8;
   border-radius: 6px 0 0 6px;
 }
@@ -141,9 +141,10 @@ header {
   height: 6rem;
   background: #818cf8;
 }
+
 .DeleteButtonContainer {
   text-align: center;
-  
+
 }
 
 .DeleteButton {
@@ -155,6 +156,7 @@ header {
   font-size: 2rem;
   background: #818cf8;
 }
+
 #Rules {
   float: right;
   border: 1px solid #818cf8;
@@ -163,17 +165,17 @@ header {
   height: 36vh;
   padding: 10px;
 }
-.RoomList{
+
+.RoomList {
   margin-top: 2rem;
   display: grid;
   gap: 2rem;
 }
-
 </style>
 
 
 <script setup>
- import Card from 'primevue/card';
+import Card from 'primevue/card';
 import SelectButton from 'primevue/selectbutton';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
@@ -213,72 +215,72 @@ const DeleteRoom = () => {
 </script>
 
 <script>
-  import { ref } from 'vue';
-  import io from 'socket.io-client';
-  // const boardName = ref('');
-  // const selectedColor = ref('');
+import { ref } from 'vue';
+import io from 'socket.io-client';
+// const boardName = ref('');
+// const selectedColor = ref('');
 
-  const rooms = ref([]);
-  const newRoomName = ref('');
+const rooms = ref([]);
+const newRoomName = ref('');
 
-  const colorValues = ref(['Random', 'Red', 'Black']);
+const colorValues = ref(['Random', 'Red', 'Black']);
 
-  // const createRoom = () => {
-  // rooms.value.push({ name: this.boardName, players: 1 });
-  // newRoomName.value = '';
-
-
-  // };
+// const createRoom = () => {
+// rooms.value.push({ name: this.boardName, players: 1 });
+// newRoomName.value = '';
 
 
-  export default {
-      
-    data() {
-      return {
-        messages: [],
-        socket: null // Define socket as a component property
-      };
-    },
-    
-    mounted() {
-      // Connect to the Socket.IO server
-      const socket = io('http://localhost:8080'); // Change the URL to your backend URL
+// };
 
 
-      // Listen for messages from the server
-      console.log("before");
-      socket.on('onMessage', (message) => {
-        console.log('front onMessage'),
+export default {
+
+  data() {
+    return {
+      messages: [],
+      socket: null // Define socket as a component property
+    };
+  },
+
+  mounted() {
+    // Connect to the Socket.IO server
+    const socket = io('http://localhost:8080'); // Change the URL to your backend URL
+
+
+    // Listen for messages from the server
+    console.log("before");
+    socket.on('onMessage', (message) => {
+      console.log('front onMessage'),
         this.messages.push(message),
         socket.emit('message', {
           msg: 'my new message',
           content: message,
         });
-        console.log( "0weifji0ewr", message );
-      });
-    },
-    methods:{
-      createRoom(){
-        console.log('testing this: ', this)
-        rooms.value.push({ name: this.boardName, players: 1 });
-        // newRoomName.value = '';
+      console.log("0weifji0ewr", message);
+    });
+  },
+  methods: {
+    createRoom() {
+      console.log('testing this: ', this)
+      rooms.value.push({ name: this.boardName, players: 1 });
+      // newRoomName.value = '';
 
-      },
-      newRoom(){
-        console.log('starting ')
-        const socket = io('http://localhost:8080');
-        console.log("test connect");
-        console.log(this);
-        const boardName = this.boardName;
-        const playerColor = this.selectColor;
-        console.log("color: ", playerColor);
-        console.log("baordname: ", boardName);
-        socket.emit('boardCreationData', {
-          msg: 'trying',
-          playerColor: playerColor,
-          boardName: boardName
-        });
-      }
+    },
+    newRoom() {
+      console.log('starting ')
+      const socket = io('http://localhost:8080');
+      console.log("test connect");
+      console.log(this);
+      const boardName = this.boardName;
+      const playerColor = this.selectColor;
+      console.log("color: ", playerColor);
+      console.log("baordname: ", boardName);
+      socket.emit('boardCreationData', {
+        msg: 'trying',
+        playerColor: playerColor,
+        boardName: boardName
+      });
+    }
   }
 }
 
