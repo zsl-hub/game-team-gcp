@@ -1,12 +1,12 @@
-import { Datastore, PropertyFilter } from '@google-cloud/datastore';
-import { room } from "src/dto/room.dto"
+import { OtherRoutesRepository } from "src/repository/otherroutes.repository"
+import { Room } from "src/dto/room.dto"
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export class OtherRoutesService {
-    datastore = new Datastore({ databaseId: 'checkers-datastore', projectId: "checkers-zsl" });
+    constructor(private readonly OtherRoutesRepository: OtherRoutesRepository) { }
 
-    async getAllAvailableRooms(): Promise<room[]> {
-        const query = this.datastore.createQuery("room").filter(new PropertyFilter("isAvailable", "=", 1));
-        const res = await query.run();
-        return res[0];
+    async getAllAvailableRooms(): Promise<Room[]> {
+        return await this.OtherRoutesRepository.getAllAvailableRooms();
     }
 }

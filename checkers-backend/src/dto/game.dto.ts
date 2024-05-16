@@ -1,23 +1,23 @@
 import { IsNotEmpty } from 'class-validator';
 
-enum gameResult {
-    "draw",
-    "firstWin",
-    "secondWin",
-    "ongoing"
+enum GameResult {
+    Draw = "draw",
+    FirstWin = "firstWin",
+    SecondWin = "secondWin",
+    Ongoing = "ongoing"
 }
 
-enum color {
-    "red",
-    "black"
+enum Color {
+    Red = "red",
+    Black = "black"
 }
 
-export class game {
+export class Game {
     gameId: string;
     @IsNotEmpty()
     roomId: number;
     @IsNotEmpty()
-    player1Color: color;
+    player1Color: Color;
     @IsNotEmpty()
     player1Name: string;
     player1Id: string;
@@ -27,5 +27,5 @@ export class game {
     @IsNotEmpty()
     gameEnded: boolean;
     @IsNotEmpty()
-    gameResult: gameResult;
+    gameResult: GameResult;
 }

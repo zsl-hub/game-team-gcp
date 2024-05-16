@@ -1,53 +1,29 @@
-import { Datastore, PropertyFilter } from '@google-cloud/datastore';
-import { gameMove } from 'src/dto/gamemoves.dto'
-import { v4 as uuidv4 } from 'uuid';
-import { ResponseService } from './response.service';
+import { Room } from 'src/dto/room.dto'
+import { RoomRepository } from "src/repository/room.repository"
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export class RoomService {
-    datastore = new Datastore({ databaseId: 'checkers-datastore', projectId: "checkers-zsl" });
-    constructor(private readonly ResponseService: ResponseService) { }
+    constructor(private readonly RoomRepository: RoomRepository) { }
 
-    async findAll(): Promise<gameMove[]> {
-        const query = this.datastore.createQuery("room")
-        const result = await query.run();
-        return result[0];
+    async findAll(): Promise<Room[]> {
+        return await this.RoomRepository.findAll();
     }
 
-    async findOne(id: string): Promise<gameMove> {
-        const query = this.datastore.createQuery("room")
-            .filter(new PropertyFilter(("roomId"), "=", id))
-        const result = await query.run();
-        return result[0][0];
+    async findOne(id: string): Promise<Room> {
+        const data = await this.RoomRepository.findOne(id);
+        return data;
     }
 
-    async add(body: gameMove): Promise<string> {
-        body.gameMoveId = uuidv4();
-        const taskKey = this.datastore.key('roomId');
-        const entity = {
-            key: taskKey,
-            data: body,
-        };
-        await this.datastore.save(entity);
-        return await this.ResponseService.SuccessNoData();
+    async add(body: Room): Promise<string> {
+        return await this.RoomRepository.add(body);
     }
 
-    async update(id: string, body: gameMove): Promise<string> {
-        body.gameMoveId = id;
-        const query = this.datastore.createQuery("room").filter(new PropertyFilter("roomId", "=", id));
-        const res = await query.run();
-        const taskKey = res[0][0][this.datastore.KEY];
-        const entity = {
-            key: taskKey,
-            data: body,
-        };
-        await this.datastore.update(entity);
-        return await this.ResponseService.SuccessNoData();
+    async update(id: string, body: Room): Promise<string> {
+        return await this.RoomRepository.update(id, body);
     }
 
     async delete(id: string): Promise<string> {
-        const query = this.datastore.createQuery("room").filter(new PropertyFilter("roomId", "=", id));
-        const res = await query.run();
-        await this.datastore.delete(res[0][0][this.datastore.KEY]);
-        return await this.ResponseService.SuccessNoData();
+        return await this.RoomRepository.delete(id);
     }
 }

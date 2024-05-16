@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 
-class board {
+class Board {
     "A": string[8];
     "B": string[8];
     "C": string[8];
@@ -11,12 +11,12 @@ class board {
     "H": string[8];
 }
 
-export class gameMove {
+export class GameMove {
     gameMoveId: string;
     @IsNotEmpty()
     gameId: number;
     @IsNotEmpty()
-    current: board;
+    current: Board;
     @IsNotEmpty()
     onMove: string;
 }

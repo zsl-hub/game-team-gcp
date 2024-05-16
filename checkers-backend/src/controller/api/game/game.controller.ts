@@ -1,29 +1,29 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { GameService } from 'src/service/game.service';
-import { game } from 'src/dto/game.dto';
+import { Game } from 'src/dto/game.dto';
 
 @Controller('api/v1/Game')
 export class GameController {
     constructor(private readonly gameService: GameService) { }
 
     @Get()
-    async findAll(): Promise<game[]> {
+    async findAll(): Promise<Game[]> {
         return await this.gameService.findAll();
     }
 
     @Get(":id")
-    async findOne(@Param('id') id: string): Promise<game> {
+    async findOne(@Param('id') id: string): Promise<Game> {
         return await this.gameService.findOne(id);
     }
 
 
     @Post()
-    async add(@Body() body: game): Promise<string> {
+    async add(@Body() body: Game): Promise<string> {
         return await this.gameService.add(body);
     }
 
     @Put(':id')
-    async update(@Param('id') id: string, @Body() body: game): Promise<string> {
+    async update(@Param('id') id: string, @Body() body: Game): Promise<string> {
         return await this.gameService.update(id, body);
     }
 

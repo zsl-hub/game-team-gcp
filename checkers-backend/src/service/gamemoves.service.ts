@@ -1,53 +1,28 @@
-import { Datastore, PropertyFilter } from '@google-cloud/datastore';
-import { gameMove } from 'src/dto/gamemoves.dto'
-import { v4 as uuidv4 } from 'uuid';
-import { ResponseService } from './response.service';
+import { GameMovesRepository } from "src/repository/gamemoves.repository"
+import { GameMove } from 'src/dto/gamemoves.dto'
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export class GameMovesService {
-    datastore = new Datastore({ databaseId: 'checkers-datastore', projectId: "checkers-zsl" });
-    constructor(private readonly ResponseService: ResponseService) { }
+    constructor(private readonly GameMovesRepository: GameMovesRepository) { }
 
-    async findAll(): Promise<gameMove[]> {
-        const query = this.datastore.createQuery("gameMove")
-        const result = await query.run();
-        return result[0];
+    async findAll(): Promise<GameMove[]> {
+        return await this.GameMovesRepository.findAll();
     }
 
-    async findOne(id: string): Promise<gameMove> {
-        const query = this.datastore.createQuery("gameMove")
-            .filter(new PropertyFilter(("gameMoveId"), "=", id))
-        const result = await query.run();
-        return result[0][0];
+    async findOne(id: string): Promise<GameMove> {
+        return await this.GameMovesRepository.findOne(id);
     }
 
-    async add(body: gameMove): Promise<string> {
-        body.gameMoveId = uuidv4();
-        const taskKey = this.datastore.key('gameMove');
-        const entity = {
-            key: taskKey,
-            data: body,
-        };
-        await this.datastore.save(entity);
-        return await this.ResponseService.SuccessNoData();
+    async add(body: GameMove): Promise<string> {
+        return await this.GameMovesRepository.add(body);
     }
 
-    async update(id: string, body: gameMove): Promise<string> {
-        body.gameMoveId = id;
-        const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter("gameMoveId", "=", id));
-        const res = await query.run();
-        const taskKey = res[0][0][this.datastore.KEY];
-        const entity = {
-            key: taskKey,
-            data: body,
-        };
-        await this.datastore.update(entity);
-        return await this.ResponseService.SuccessNoData();
+    async update(id: string, body: GameMove): Promise<string> {
+        return await this.GameMovesRepository.update(id, body);
     }
 
     async delete(id: string): Promise<string> {
-        const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter("gameMoveId", "=", id));
-        const res = await query.run();
-        await this.datastore.delete(res[0][0][this.datastore.KEY]);
-        return await this.ResponseService.SuccessNoData();
+        return await this.GameMovesRepository.delete(id);
     }
 }
