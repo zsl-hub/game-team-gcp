@@ -16,7 +16,7 @@
       </div>
 
       <div class="Surrender">
-        <RouterLink to="/"><Button class="SurrenderButton" aria-label="Submit"> 🏳️</Button></RouterLink>
+        <RouterLink to="/Menu"><Button class="SurrenderButton" aria-label="Submit"> 🏳️</Button></RouterLink>
 
       </div>
 
@@ -142,8 +142,8 @@
 <script setup>
   import InputText from 'primevue/inputtext';
   import Button from 'primevue/button';
-
-  document.addEventListener("DOMContentLoaded", function () {
+  import {onMounted} from 'vue';
+  onMounted(() =>  {
     const Board = document.getElementById("Board");
 
     let CurrentPlayer = 'red';
@@ -151,7 +151,6 @@
     let GameState = Array(8).fill().map(() => Array(8).fill(0)); //tablica 8x8
 
     InitializeBoard();
-    CreatePiece(color);
 
     function InitializeBoard() {
       for (let row = 0; row < 8; row++) {
