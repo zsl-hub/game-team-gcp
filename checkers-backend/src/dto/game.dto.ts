@@ -15,7 +15,7 @@ enum Color {
 export class Game {
     gameId: string;
     @IsNotEmpty()
-    roomId: number;
+    roomId: string;
     @IsNotEmpty()
     player1Color: Color;
     @IsNotEmpty()
