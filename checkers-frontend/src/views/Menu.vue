@@ -249,6 +249,7 @@ export default {
   },
 
   async mounted() {
+    refreshRooms()
     // Connect to the Socket.IO server
     const socket = io('http://localhost:8080'); // Change the URL to your backend URL
 
