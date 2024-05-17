@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, InternalServerErrorException, Param, Post, Put } from '@nestjs/common';
 import { GameMovesService } from 'src/service/gamemoves.service';
 import { GameMove } from 'src/dto/gamemoves.dto';
 
@@ -8,17 +8,23 @@ export class GameMovesController {
 
     @Get()
     async findAll(): Promise<GameMove[]> {
-        return await this.gameMovesService.findAll();
+        const response = await this.gameMovesService.findAll();
+        if(response === undefined){ throw new InternalServerErrorException("Error occured");}
+        return response;
     }
 
     @Get(":id")
     async findOne(@Param('id') id: string): Promise<GameMove> {
-        return await this.gameMovesService.findOne(id);
+        const response = await this.gameMovesService.findOne(id);
+        if(response === undefined){ throw new InternalServerErrorException("Error occured");}
+        return response;
     }
 
     @Post()
     async add(@Body() body: GameMove): Promise<string> {
-        return await this.gameMovesService.add(body);
+        const response = await this.gameMovesService.add(body);
+        if(response != "Success"){throw new InternalServerErrorException("Error occured");}
+        return response;
     }
 
     @Put(':id')
