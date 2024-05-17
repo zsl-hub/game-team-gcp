@@ -8,8 +8,8 @@ enum GameResult {
 }
 
 enum Color {
-    Red = "red",
-    Black = "black"
+    Red = "Red",
+    Black = "Black"
 }
 
 export class Game {
