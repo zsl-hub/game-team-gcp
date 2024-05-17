@@ -19,7 +19,7 @@ export class GameMovesRepository {
 
     async add(body: GameMove): Promise<string> {
         body.gameMoveId = uuidv4();
-        const taskKey = this.datastore.key('gameMoveId');
+        const taskKey = this.datastore.key('gameMove');
         const entity = {
             key: taskKey,
             data: body,
