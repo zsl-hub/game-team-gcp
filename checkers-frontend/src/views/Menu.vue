@@ -151,8 +151,8 @@ header {
 .DeleteButton {
   text-align: center;
   border: 3px solid #818cf8;
-  width: 20rem;
-  height: 6rem;
+  width: 18rem;
+  height: 5.5rem;
   border-radius: 10px;
   font-size: 2rem;
   background: #818cf8;
