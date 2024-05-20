@@ -12,7 +12,10 @@
         <InputText id="FirstUsername" v-model="value" />
       </div>
       <div class="Surrender">
-        <RouterLink to="/"><Button class="SurrenderButton" aria-label="Submit"> 🏳️</Button></RouterLink>
+        Surrender:<RouterLink to="/"><Button class="SurrenderButton" aria-label="Submit"> 🏳️</Button></RouterLink>
+      </div>
+      <div class="ConfirmMove">
+        Confirm move:<Button class="ConfirmMoveButton" @click="ConfirmMove()" aria-label="Confirm Move">✔️</Button>
       </div>
       <div class="SecondPlayer">
         <label for="username">2 Player: </label>
@@ -347,5 +350,37 @@
       }
       return false;
     }
+
+    
+    
   });
+</script>
+
+<script>
+  import axios from 'axios';
+
+  export default {
+    data() {
+      return {
+        GameState: null, 
+      };
+    },
+    methods: {
+      async ConfirmMove() {
+        try {
+          
+          const response = await axios.post('http://localhost:8080/api/v1/makeMove/', {
+            current: this.GameState
+            
+          });
+          
+          
+          console.log(response.data);
+        }
+        catch(error){
+          console.error(error);
+        }
+      }
+    }
+  }
 </script>
