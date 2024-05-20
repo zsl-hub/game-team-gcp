@@ -2,6 +2,7 @@ import { OtherRoutesRepository } from "../repository/otherroutes.repository"
 import { Room } from "../dto/room.dto"
 import { Body, Injectable } from "@nestjs/common";
 import { PositionMove } from "../dto/gamemoves.dto";
+import { start } from "repl";
 
 @Injectable()
 export class OtherRoutesService {
@@ -41,35 +42,47 @@ export class OtherRoutesService {
         return 0;
     }
 
+    async checkQueen(startValue: number, endValue: number): Promise<number> {
+        if (endValue == startValue + 2) { return 1; } // check for the queen case
+        return 0;
+    }
+
     async makeMove(@Body() body: PositionMove): Promise<number> {
         const tab = body.move.split(":");
+        const collIndex = [[7, 1, 3, 5], [6, 0, 2, 4]]
         const board = Object.keys(body.current).map((key) => body.current[key])
         if (Object.keys(body.current)[0] != "A") { board.reverse() }
-        console.log(board)
 
         const start = parseInt(tab[0]);
         const startRow = Math.ceil(start / 4) - 1;
-        const startColl = (start % 4) * 2 - 2 + (Math.abs(startRow % 2 - 1))
+        const startColl = collIndex[startRow % 2][start % 4]
         const startValue = board[startRow][startColl];
+        const otherPieceType = (startValue == 3 || startValue == 4) ? startValue - 2 : startValue + 2;
+
         console.log("Start Value: ", startValue, " Row: ", startRow, " Coll: ", startColl, " Start: ", start)
         const end = parseInt(tab[1]);
         const endRow = Math.ceil(end / 4) - 1;
-        const endColl = (end % 4) * 2 - 2 + (Math.abs(endRow % 2 - 1))
+        const endColl = collIndex[endRow % 2][end % 4]
         const endValue = board[endRow][endColl];
         console.log("End Value: ", endValue, " Row: ", endRow, " Coll: ", endColl, " End: ", end)
 
-        if (await this.checkRange(start, end)) { console.log(1); return 0; }
-        if (await this.checkDefined([start, end, startRow, startColl, endRow, endColl, startValue, endValue])) { console.log(2); return 0; }
-        if (await this.endTileEmpty(endValue)) { console.log(3); return 0; }
-        if (await this.startTileEmpty(startValue)) { console.log(4); return 0; }
-        if (await this.checkAxisX(startColl, endColl)) { console.log(5); return 0; }
-        if (await this.checkAxisY(startRow, endRow)) { console.log(6); return 0; }
+        if (await this.checkQueen(startValue, endValue)) { return 0; }
+        if (await this.checkRange(start, end)) { ; return 0; }
+        if (await this.checkDefined([start, end, startRow, startColl, endRow, endColl, startValue, endValue])) { return 0; }
+        if (await this.endTileEmpty(endValue)) { return 0; }
+        if (await this.startTileEmpty(startValue)) { return 0; }
+        if (await this.checkAxisX(startColl, endColl)) { return 0; }
+        if (await this.checkAxisY(startRow, endRow)) { return 0; }
 
         if (Math.abs(start - end) > 5) { // Take occurs
-            console.log("Take!")
-            if (board[startRow + (endRow - startRow)][startColl + (endRow - startRow)]) { return 0; } //Empty tile between
+            const rowBetween = startRow + ((end - start) % 2)
+            console.log(rowBetween)
+            const collBetween = startColl + (endColl%4) - (endRow % 2)
+            console.log(collBetween)
+            const betweenValue = board[rowBetween][collIndex[rowBetween % 2][collBetween]]
+            console.log(betweenValue)
+            if (betweenValue == 0 || betweenValue == otherPieceType) { return 0; }
         }
-        // console.log(start, end);
         return await this.OtherRoutesRepository.makeMove(body);
     }
 }

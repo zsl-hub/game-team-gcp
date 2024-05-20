@@ -126,7 +126,7 @@ describe("Game", () => {
         controller = new OtherRoutesController(service);
     });
 
-    describe('BasicMove 1', () => {
+    describe('BasicMove', () => {
         it('Expect 1', async () => {
             const data = {
                 current: {
@@ -149,7 +149,7 @@ describe("Game", () => {
         });
     });
 
-    describe('BasicMove 2', () => {
+    describe('BasicMove', () => {
         it('Expect 1', async () => {
             const data = {
                 current: {
@@ -172,7 +172,7 @@ describe("Game", () => {
         });
     });
 
-    describe('BasicMove 3 No checker', () => {
+    describe('BasicMove, Checker in between', () => {
         it('Expected 0', async () => {
             const data = {
                 current: {
@@ -195,7 +195,7 @@ describe("Game", () => {
         });
     });
 
-    describe('BasicMove 4 No checker', () => {
+    describe('BasicMove, Checker in between', () => {
         it('Expected 0', async () => {
             const data = {
                 current: {
@@ -218,87 +218,179 @@ describe("Game", () => {
         });
     });
 
-    describe('BasicMove 5 No checker', () => {
+    describe('Take, No checker', () => {
         it('Expected 0', async () => {
             const data = {
                 current: {
-                    "A": [0, 1, 0, 1, 0, 1, 0, 1],
-                    "B": [1, 0, 1, 0, 1, 0, 1, 0],
-                    "C": [0, 1, 0, 1, 0, 1, 0, 1],
-                    "D": [0, 0, 0, 0, 0, 0, 0, 0],
-                    "E": [0, 0, 0, 2, 0, 0, 0, 0],
-                    "F": [2, 0, 0, 0, 2, 0, 2, 0],
-                    "G": [0, 2, 0, 2, 0, 2, 0, 2],
-                    "H": [2, 0, 2, 0, 2, 0, 2, 0]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "22:18",
-                playerId: "someid"
-            };
-            const result = await service.makeMove(data);
-            expect(result).toBe(0);
-        });
-    });
-
-    describe('BasicMove 6 No checker', () => {
-        it('Expected 0', async () => {
-            const data = {
-                current: {
-                    "A": [0, 1, 0, 1, 0, 1, 0, 1],
-                    "B": [1, 0, 1, 0, 1, 0, 1, 0],
-                    "C": [0, 0, 0, 1, 0, 1, 0, 1],
-                    "D": [0, 0, 1, 0, 0, 0, 0, 0],
-                    "E": [0, 0, 0, 2, 0, 0, 0, 0],
-                    "F": [2, 0, 0, 0, 2, 0, 2, 0],
-                    "G": [0, 2, 0, 2, 0, 2, 0, 2],
-                    "H": [2, 0, 2, 0, 2, 0, 2, 0]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "9:14",
-                playerId: "someid"
-            };
-            const result = await service.makeMove(data);
-            expect(result).toBe(0);
-        });
-    });
-
-    describe('BasicMove 5 No checker', () => {
-        it('Expected 0', async () => {
-            const data = {
-                current: {
-                    "A": [0, 1, 0, 1, 0, 1, 0, 1],
-                    "B": [1, 0, 1, 0, 1, 0, 1, 0],
-                    "C": [0, 1, 0, 1, 0, 1, 0, 1],
-                    "D": [0, 0, 0, 0, 0, 0, 0, 0],
-                    "E": [0, 0, 0, 2, 0, 0, 0, 0],
-                    "F": [2, 0, 0, 0, 2, 0, 2, 0],
-                    "G": [0, 2, 0, 2, 0, 2, 0, 2],
-                    "H": [2, 0, 2, 0, 2, 0, 2, 0]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "22:18",
-                playerId: "someid"
-            };
-            const result = await service.makeMove(data);
-            expect(result).toBe(0);
-        });
-    });
-
-    describe('BasicMove 5 No checker', () => {
-        it('Expected 0', async () => {
-            const data = {
-                current: {
-                    "A": [0, 1, 0, 0, 0, 0, 0, 0],
-                    "B": [0, 0, 2, 0, 0, 0, 0, 0],
+                    "A": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "B": [0, 0, 0, 0, 0, 0, 0, 0],
                     "C": [0, 0, 0, 0, 0, 0, 0, 0],
-                    "D": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "D": [0, 0, 1, 0, 0, 0, 0, 0],
                     "E": [0, 0, 0, 0, 0, 0, 0, 0],
                     "F": [0, 0, 0, 0, 0, 0, 0, 0],
                     "G": [0, 0, 0, 0, 0, 0, 0, 0],
                     "H": [0, 0, 0, 0, 0, 0, 0, 0]
+                },
+                gameId: "someid",
+                gameMoveId: "someid",
+                move: "14:5",
+                playerId: "someid"
+            };
+            const result = await service.makeMove(data);
+            expect(result).toBe(0);
+        });
+    });
+
+    describe('Take, No checker', () => {
+        it('Expected 0', async () => {
+            const data = {
+                current: {
+                    "A": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "B": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "C": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "D": [0, 0, 2, 0, 0, 0, 0, 0],
+                    "E": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "F": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "G": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "H": [0, 0, 0, 0, 0, 0, 0, 0]
+                },
+                gameId: "someid",
+                gameMoveId: "someid",
+                move: "14:5",
+                playerId: "someid"
+            };
+            const result = await service.makeMove(data);
+            expect(result).toBe(0);
+        });
+    });
+
+    describe('Take in the corner, Queens', () => {
+        it('Expected 0', async () => {
+            const data = {
+                current: {
+                    "A": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "B": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "C": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "D": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "E": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "F": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "G": [0, 4, 0, 0, 0, 0, 0, 0],
+                    "H": [3, 0, 0, 0, 0, 0, 0, 0]
+                },
+                gameId: "someid",
+                gameMoveId: "someid",
+                move: "29:22",
+                playerId: "someid"
+            };
+            const result = await service.makeMove(data);
+            expect(result).toBe(1);
+        });
+    });
+
+    describe('Take in the corner, Queens', () => {
+        it('Expected 1', async () => {
+            const data = {
+                current: {
+                    "A": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "B": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "C": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "D": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "E": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "F": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "G": [0, 3, 0, 0, 0, 0, 0, 0],
+                    "H": [4, 0, 0, 0, 0, 0, 0, 0]
+                },
+                gameId: "someid",
+                gameMoveId: "someid",
+                move: "29:22",
+                playerId: "someid"
+            };
+            const result = await service.makeMove(data);
+            expect(result).toBe(1);
+        });
+    });
+
+    describe('Take in the corner, Queens', () => {
+        it('Expected 1', async () => {
+            const data = {
+                current: {
+                    "A": [0, 0, 0, 0, 0, 0, 0, 3],
+                    "B": [0, 0, 0, 0, 0, 0, 4, 0],
+                    "C": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "D": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "E": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "F": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "G": [0, 3, 0, 0, 0, 0, 0, 0],
+                    "H": [4, 0, 0, 0, 0, 0, 0, 0]
+                },
+                gameId: "someid",
+                gameMoveId: "someid",
+                move: "4:11",
+                playerId: "someid"
+            };
+            const result = await service.makeMove(data);
+            expect(result).toBe(1);
+        });
+    });
+
+    describe('Take in the corner, Queens', () => {
+        it('Expected 1', async () => {
+            const data = {
+                current: {
+                    "A": [0, 0, 0, 0, 0, 0, 0, 3],
+                    "B": [0, 0, 0, 0, 0, 0, 4, 0],
+                    "C": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "D": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "E": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "F": [0, 0, 0, 0, 0, 0, 4, 0],
+                    "G": [0, 3, 0, 0, 0, 3, 0, 3],
+                    "H": [4, 0, 0, 0, 0, 0, 4, 0]
+                },
+                gameId: "someid",
+                gameMoveId: "someid",
+                move: "32:23",
+                playerId: "someid"
+            };
+            const result = await service.makeMove(data);
+            expect(result).toBe(1);
+        });
+    });
+
+    describe('Take in the corner, Queens', () => {
+        it('Expected 1', async () => {
+            const data = {
+                current: {
+                    "A": [0, 0, 0, 0, 0, 0, 0, 3],
+                    "B": [0, 0, 0, 0, 0, 0, 4, 0],
+                    "C": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "D": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "E": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "F": [0, 0, 0, 0, 0, 0, 4, 0],
+                    "G": [0, 3, 0, 0, 0, 3, 0, 3],
+                    "H": [4, 0, 0, 0, 0, 0, 4, 0]
+                },
+                gameId: "someid",
+                gameMoveId: "someid",
+                move: "28:19",
+                playerId: "someid"
+            };
+            const result = await service.makeMove(data);
+            expect(result).toBe(1);
+        });
+    });
+
+    describe('Take in the corner', () => {
+        it('Expected 1', async () => {
+            const data = {
+                current: {
+                    "A": [0, 2, 0, 0, 0, 0, 0, 3],
+                    "B": [1, 0, 1, 0, 0, 0, 4, 0],
+                    "C": [0, 2, 0, 0, 0, 0, 0, 0],
+                    "D": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "E": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "F": [0, 0, 0, 0, 0, 0, 4, 0],
+                    "G": [0, 3, 0, 0, 0, 3, 0, 3],
+                    "H": [4, 0, 0, 0, 0, 0, 4, 0]
                 },
                 gameId: "someid",
                 gameMoveId: "someid",
@@ -310,22 +402,45 @@ describe("Game", () => {
         });
     });
 
-    describe('BasicMove 5 No checker', () => {
-        it('Expected 0', async () => {
+    describe('Take in the corner', () => {
+        it('Expected 1', async () => {
             const data = {
                 current: {
-                    "A": [0, 0, 0, 0, 0, 0, 0, 0],
-                    "B": [0, 0, 1, 0, 0, 0, 0, 0],
-                    "C": [0, 0, 0, 2, 0, 0, 0, 0],
+                    "A": [0, 2, 0, 0, 0, 0, 0, 3],
+                    "B": [1, 0, 1, 0, 0, 0, 4, 0],
+                    "C": [0, 2, 0, 0, 0, 0, 0, 0],
                     "D": [0, 0, 0, 0, 0, 0, 0, 0],
                     "E": [0, 0, 0, 0, 0, 0, 0, 0],
-                    "F": [0, 0, 0, 0, 0, 0, 0, 0],
-                    "G": [0, 0, 0, 0, 0, 0, 0, 0],
-                    "H": [0, 0, 0, 0, 0, 0, 0, 0]
+                    "F": [0, 0, 0, 0, 0, 0, 4, 0],
+                    "G": [0, 3, 0, 0, 0, 3, 0, 3],
+                    "H": [4, 0, 0, 0, 0, 0, 4, 0]
                 },
                 gameId: "someid",
                 gameMoveId: "someid",
-                move: "15:6",
+                move: "5:14",
+                playerId: "someid"
+            };
+            const result = await service.makeMove(data);
+            expect(result).toBe(1);
+        });
+    });
+
+    describe('Take in the corner', () => {
+        it('Expected 1', async () => {
+            const data = {
+                current: {
+                    "A": [0, 0, 0, 0, 0, 0, 0, 3],
+                    "B": [0, 0, 1, 0, 0, 0, 4, 0],
+                    "C": [0, 2, 0, 2, 0, 0, 0, 0],
+                    "D": [0, 0, 1, 0, 0, 0, 0, 0],
+                    "E": [0, 0, 0, 0, 0, 0, 0, 0],
+                    "F": [0, 0, 0, 0, 0, 0, 4, 0],
+                    "G": [0, 3, 0, 0, 0, 3, 0, 3],
+                    "H": [4, 0, 0, 0, 0, 0, 4, 0]
+                },
+                gameId: "someid",
+                gameMoveId: "someid",
+                move: "14:5",
                 playerId: "someid"
             };
             const result = await service.makeMove(data);
