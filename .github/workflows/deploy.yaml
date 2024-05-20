@@ -1,0 +1,30 @@
+name: deploy to cloud run
+
+on:
+    workflow_dispatch:
+        inputs:
+            tag-version:
+                required: true
+
+env:
+    PROJECT_ID: ${{ secrets.PROJECT_ID }}
+    REGION: ${{ secrets.REGION }}
+    APP_NAME: ${{ secrets.DEV_APP_NAME }}
+    REGISTRY_NAME: ${{ secrets.ARTIFACT_REGISTRY_NAME }}
+    SERVICE_ACCOUNT_EMAIL: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
+    TAG_VERSION: ${{ github.event.inputs.tag-version }}
+
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Deploy
+              run: |-
+                gcloud run deploy $APP_NAME \
+                --region $REGION \
+                --image $REGION-docker.pkg.dev/$PROJECT_ID/$REGISTRY_NAME/$APP_NAME:TAG_VERSION \
+                --platform "managed" \
+                --service-account $SERVICE_ACCOUNT_EMAIL \
+                --port 80 \
+                --quiet
