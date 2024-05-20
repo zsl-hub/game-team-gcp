@@ -77,7 +77,7 @@ export class OtherRoutesService {
         if (Math.abs(start - end) > 5) { // Take occurs
             const rowBetween = startRow + ((end - start) % 2)
             console.log(rowBetween)
-            const collBetween = startColl + (endColl%4) - (endRow % 2)
+            const collBetween = startColl + (endColl % 4) - (endRow % 2)
             console.log(collBetween)
             const betweenValue = board[rowBetween][collIndex[rowBetween % 2][collBetween]]
             console.log(betweenValue)

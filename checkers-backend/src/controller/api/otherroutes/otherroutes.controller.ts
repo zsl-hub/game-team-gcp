@@ -17,7 +17,7 @@ export class OtherRoutesController {
     @Post("/makeMove/")
     async makeMove(@Body() body: PositionMove): Promise<number> {
         const response = await this.otherRoutesService.makeMove(body);
-        if(!response){throw new BadRequestException(response);}
+        if (!response) { throw new BadRequestException(response); }
         return 1;
     }
 }
