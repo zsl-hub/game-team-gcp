@@ -1,13 +1,16 @@
 name: trying to push to gcp
 
 on:
-    push:
-        branches:
-            - 'test-workflow'
+    workflow_dispatch:
+        inputs:
+            tag-version:
+                required: true
+
 env:
     REGISTRY: europe-west3-docker.pkg.dev
     FRONTEND_IMAGE: europe-west3-docker.pkg.dev/checkers-zsl/checkers/frontend
     BACKEND_IMAGE: europe-west3-docker.pkg.dev/checkers-zsl/checkers/backend
+    TAG-VERSION: ${{ github.event.inputs.tag-version }}
 
 jobs:
     deploy:
@@ -33,15 +36,15 @@ jobs:
             
             
             - name: Build Frontend
-              run: docker build . --tag $FRONTEND_IMAGE:1.0.4
+              run: docker build . --tag $FRONTEND_IMAGE:$TAG-VERSION
               working-directory: checkers-frontend
 
             - name: Build Backend
-              run: docker build . --tag $BACKEND_IMAGE:1.0.4
+              run: docker build . --tag $BACKEND_IMAGE:$TAG-VERSION
               working-directory: checkers-backend
             
             - name: Publish Frontend
-              run: docker push $FRONTEND_IMAGE:1.0.4
+              run: docker push $FRONTEND_IMAGE:$TAG-VERSION
             
             - name: Publish Backend
-              run: docker push $BACKEND_IMAGE:1.0.4
+              run: docker push $BACKEND_IMAGE:$TAG-VERSION
