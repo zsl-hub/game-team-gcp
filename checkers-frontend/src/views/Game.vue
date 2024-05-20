@@ -139,6 +139,8 @@
   import InputText from 'primevue/inputtext';
   import Button from 'primevue/button';
   import { onMounted } from 'vue';
+  import io from 'socket.io-client';
+
 
   onMounted(() => {
     const Board = document.getElementById("Board");
@@ -267,9 +269,18 @@
       toCell.dataset.color = CurrentPlayer;
       GameState[toRow][toCol] = isKing ? (CurrentPlayer === 'black' ? 4 : 3) : (CurrentPlayer === 'black' ? 2 : 1);
 
-      console.log(GameState)
+      // console.log(GameState)
+      const socket = io('http://localhost:8080');
+      console.log("testing move");
+      socket.emit('boardData', {
+        msg: 'trying to send board',
+        board: Board
+      });
 
       UnSelectPiece();
+
+     
+
     }
 
     function SwitchPlayer() {
@@ -296,6 +307,8 @@
         return GameState[capturedRow][capturedCol] !== 0 && GameState[capturedRow][capturedCol] !== (CurrentPlayer === 'red' ? 1 : 2) && GameState[toRow][toCol] === 0;
       }
       return false;
+
+
     }
 
     function CapturePiece(fromCell, toCell) {
@@ -308,6 +321,9 @@
       GameState[capturedRow][capturedCol] = 0;
 
       MovePiece(fromCell, toCell);
+
+      
+
     }
 
     function CheckForPromotion(cell) {
