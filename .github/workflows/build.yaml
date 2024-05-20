@@ -19,7 +19,7 @@ jobs:
           uses: 'google-github-actions/auth@v2'
           with: 
             project_id: ${{ secrets.GOOGLE_PROJECT }}
-            service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+            workload_identity_provider: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
         - name: build and push docker image
           env:
             GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
