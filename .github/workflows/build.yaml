@@ -11,11 +11,15 @@ jobs:
         steps:
         - name: install the gcloud cli
           uses: google-github-actions/setup-gcloud@v2
+        #   with: 
+        #     project_id: ${{ secrets.GOOGLE_PROJECT }}
+        #     service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        #     export_default_credentials: true
+        - name: auth of gcp cli
+          uses: 'google-github-actions/auth@v2'
           with: 
             project_id: ${{ secrets.GOOGLE_PROJECT }}
             service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-            export_default_credentials: true
-
         - name: build and push docker image
           env:
             GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
