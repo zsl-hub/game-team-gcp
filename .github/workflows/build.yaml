@@ -4,6 +4,10 @@ on:
     push:
         branches:
             - 'test-workflow'
+env:
+    REGISTRY: europe-west3-docker.pkg.dev
+    FRONTEND_IMAGE: europe-west3-docker.pkg.dev/checkers-zsl/checkers/frontend
+    BACKEND_IMAGE: europe-west3-docker.pkg.dev/checkers-zsl/checkers/backend
 
 jobs:
     deploy:
@@ -25,18 +29,19 @@ jobs:
 
             - name: "Docker auth"
               run: |-
-                gcloud auth configure-docker europe-west3-docker.pkg.dev --quiet
+                gcloud auth configure-docker $REGISTRY --quiet
+            
             
             - name: Build Frontend
-              run: docker build . --tag europe-west3-docker.pkg.dev/checkers-zsl/checkers-demo/frontend:1.0.4
+              run: docker build . --tag $FRONTEND_IMAGE:1.0.4
               working-directory: checkers-frontend
 
             - name: Build Backend
-              run: docker build . --tag europe-west3-docker.pkg.dev/checkers-zsl/checkers-demo/backend:1.0.4
+              run: docker build . --tag $BACKEND_IMAGE:1.0.4
               working-directory: checkers-backend
             
             - name: Publish Frontend
-              run: docker push europe-west3-docker.pkg.dev/checkers-zsl/checkers-demo/frontend:1.0.4
+              run: docker push $FRONTEND_IMAGE:1.0.4
             
             - name: Publish Backend
-              run: docker push europe-west3-docker.pkg.dev/checkers-zsl/checkers-demo/backend:1.0.4
+              run: docker push $BACKEND_IMAGE:1.0.4
