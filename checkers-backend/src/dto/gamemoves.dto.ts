@@ -1,22 +1,35 @@
 import { IsNotEmpty } from 'class-validator';
 
-class Board {
-    "A": string[8];
-    "B": string[8];
-    "C": string[8];
-    "D": string[8];
-    "E": string[8];
-    "F": string[8];
-    "G": string[8];
-    "H": string[8];
+export class Board {
+    @IsNotEmpty()
+    "A": number[];
+    @IsNotEmpty()
+    "B": number[];
+    @IsNotEmpty()
+    "C": number[];
+    @IsNotEmpty()
+    "D": number[];
+    @IsNotEmpty()
+    "E": number[];
+    @IsNotEmpty()
+    "F": number[];
+    @IsNotEmpty()
+    "G": number[];
+    @IsNotEmpty()
+    "H": number[];
 }
 
 export class GameMove {
     gameMoveId: string;
     @IsNotEmpty()
-    gameId: number;
+    gameId: string;
     @IsNotEmpty()
     current: Board;
+}
+
+export class PositionMove extends GameMove {
     @IsNotEmpty()
-    onMove: string;
+    move: string;
+    @IsNotEmpty()
+    playerId: string;
 }
