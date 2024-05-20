@@ -1,10 +1,10 @@
-name: trying to push to gcp
+name: pushing to gcp
 
-on:
-    workflow_dispatch
-        # inputs:
-        #     tag-version:
-        #         required: true
+on: 
+    workflow_dispatch:  
+        inputs:
+            tag-version:
+                required: true
 
 env:
     REGISTRY: europe-west3-docker.pkg.dev
