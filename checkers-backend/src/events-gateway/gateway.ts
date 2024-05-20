@@ -34,6 +34,12 @@ export class MyGateway implements OnModuleInit{
         this.server.emit('newBoardData',{
             msg: 'boardData',
             content: creationData,
-        })
+        });
+    }
+
+    @SubscribeMessage('boardData')
+    onMove(@MessageBody() boardData: string){
+        console.log('server received boardData'),
+        console.log('boardData: ', boardData);
     }
 }

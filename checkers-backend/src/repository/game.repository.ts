@@ -19,7 +19,7 @@ export class GameRepository {
 
     async add(body: Game): Promise<string> {
         body.gameId = uuidv4();
-        const taskKey = this.datastore.key('gameId');
+        const taskKey = this.datastore.key('game');
         const entity = {
             key: taskKey,
             data: body,

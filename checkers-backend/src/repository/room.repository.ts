@@ -19,7 +19,7 @@ export class RoomRepository {
 
     async add(body: Room): Promise<string> {
         body.roomId = uuidv4();
-        const taskKey = this.datastore.key('roomId');
+        const taskKey = this.datastore.key('room');
         const entity = {
             key: taskKey,
             data: body,

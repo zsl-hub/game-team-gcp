@@ -126,11 +126,11 @@
   }
 
   .Selected {
-    border: 3px solid cyan;
+    border: 5px solid cyan;
   }
 
-  .Piece.King {
-    border: 3px solid gold;
+  .King {
+    border: 5px solid gold;
   }
 </style>
 
@@ -139,13 +139,16 @@
   import InputText from 'primevue/inputtext';
   import Button from 'primevue/button';
   import { onMounted } from 'vue';
+  import io from 'socket.io-client';
+
 
   onMounted(() => {
     const Board = document.getElementById("Board");
 
     let CurrentPlayer = 'red';
     let SelectedCell = null;
-    let GameState = Array(8).fill().map(() => Array(8).fill(0)); //tablica 8x8
+    let GameState = Array(8).fill().map(() => Array(8).fill(0));
+    let MultiCapture = false;
 
     InitializeBoard();
 
@@ -157,21 +160,19 @@
 
           if ((row + col) % 2 === 0) {
             cell.classList.add("LightSquare");
-          }
-          else {
+          } else {
             cell.classList.add("DarkSquare");
 
             if (row < 3) {
               cell.classList.add("Occupied");
               cell.dataset.color = 'black';
               cell.appendChild(CreatePiece('Black'));
-              GameState[row][col] = 2; //zapisanie stanu planszy
-            }
-            else if (row > 4) {
+              GameState[row][col] = 2;
+            } else if (row > 4) {
               cell.classList.add("Occupied");
               cell.dataset.color = 'red';
               cell.appendChild(CreatePiece('Red'));
-              GameState[row][col] = 1; //zapisanie stanu planszy
+              GameState[row][col] = 1;
             }
           }
 
@@ -196,19 +197,26 @@
 
       if (SelectedCell) {
         if (IsMoveAllowed(SelectedCell, ClickedCell)) {
-          MovePiece(SelectedCell, ClickedCell);
-          CheckForPromotion(ClickedCell);
-          SwitchPlayer();
+          if (!MultiCapture) {
+            MovePiece(SelectedCell, ClickedCell);
+            CheckForPromotion(ClickedCell);
+            SwitchPlayer();
+          }
         } else if (IsCaptureAllowed(SelectedCell, ClickedCell)) {
           CapturePiece(SelectedCell, ClickedCell);
           CheckForPromotion(ClickedCell);
-          SwitchPlayer();
-        }
-        else if (ClickedCell.dataset.color === CurrentPlayer) {
+
+          if (IsAnotherCapturePossible(ClickedCell)) {
+            SelectPiece(ClickedCell);
+            MultiCapture = true;
+          } else {
+            MultiCapture = false;
+            SwitchPlayer();
+          }
+        } else if (!MultiCapture && ClickedCell.dataset.color === CurrentPlayer) {
           SelectPiece(ClickedCell);
         }
-      }
-      else if (ClickedCell.dataset.color === CurrentPlayer) {
+      } else if (ClickedCell.dataset.color === CurrentPlayer) {
         SelectPiece(ClickedCell);
       }
     }
@@ -251,18 +259,28 @@
       fromCell.innerHTML = '';
       fromCell.classList.remove('Occupied');
       fromCell.dataset.color = '';
-      GameState[fromRow][fromCol] = 0; // aktualizacja stanu planszy
+      GameState[fromRow][fromCol] = 0;
 
       const newPiece = CreatePiece(CurrentPlayer.charAt(0).toUpperCase() + CurrentPlayer.slice(1));
+      
       if (isKing) newPiece.classList.add('King');
       toCell.appendChild(newPiece);
       toCell.classList.add('Occupied');
       toCell.dataset.color = CurrentPlayer;
-      GameState[toRow][toCol] = isKing ? (CurrentPlayer === 'black' ? 4 : 3) : (CurrentPlayer === 'black' ? 2 : 1); // aktualizacja stanu planszy
+      GameState[toRow][toCol] = isKing ? (CurrentPlayer === 'black' ? 4 : 3) : (CurrentPlayer === 'black' ? 2 : 1);
 
-      console.log(GameState)
+      // console.log(GameState)
+      const socket = io('http://localhost:8080');
+      console.log("testing move");
+      socket.emit('boardData', {
+        msg: 'trying to send board',
+        board: Board
+      });
 
       UnSelectPiece();
+
+     
+
     }
 
     function SwitchPlayer() {
@@ -275,12 +293,22 @@
       const fromCol = parseInt(fromCell.dataset.col);
       const toCol = parseInt(toCell.dataset.col);
 
+      const direction = CurrentPlayer === 'red' ? -1 : 1;
+      const isKing = fromCell.firstChild.classList.contains('King');
+
       if (Math.abs(fromRow - toRow) === 2 && Math.abs(fromCol - toCol) === 2) {
         const capturedRow = (fromRow + toRow) / 2;
         const capturedCol = (fromCol + toCol) / 2;
-        return GameState[capturedRow][capturedCol] !== CurrentPlayer && GameState[capturedRow][capturedCol] !== null && GameState[toRow][toCol] === 0;
+
+        if (!isKing && direction !== (toRow - fromRow) / Math.abs(toRow - fromRow)) {
+          return false;
+        }
+
+        return GameState[capturedRow][capturedCol] !== 0 && GameState[capturedRow][capturedCol] !== (CurrentPlayer === 'red' ? 1 : 2) && GameState[toRow][toCol] === 0;
       }
       return false;
+
+
     }
 
     function CapturePiece(fromCell, toCell) {
@@ -290,17 +318,50 @@
       capturedCell.innerHTML = '';
       capturedCell.classList.remove('Occupied');
       capturedCell.dataset.color = '';
-      GameState[capturedRow][capturedCol] = 0; // aktualizacja stanu planszy
+      GameState[capturedRow][capturedCol] = 0;
 
       MovePiece(fromCell, toCell);
+
+      
+
     }
 
     function CheckForPromotion(cell) {
       const row = parseInt(cell.dataset.row);
       if ((CurrentPlayer === 'red' && row === 0) || (CurrentPlayer === 'black' && row === 7)) {
         cell.firstChild.classList.add('King');
-        GameState[row][parseInt(cell.dataset.col)] = CurrentPlayer === 'black' ? 4 : 3; // aktualizacja stanu planszy
+        GameState[row][parseInt(cell.dataset.col)] = CurrentPlayer === 'black' ? 4 : 3;
       }
+    }
+
+    function IsAnotherCapturePossible(cell) {
+      const row = parseInt(cell.dataset.row);
+      const col = parseInt(cell.dataset.col);
+
+      const directions = [
+        [2, 2], [2, -2], [-2, 2], [-2, -2]
+      ];
+
+      const isKing = cell.firstChild.classList.contains('King');
+      const playerPiece = GameState[row][col];
+
+      for (const [dx, dy] of directions) {
+        const newRow = row + dx;
+        const newCol = col + dy;
+        if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+          const midRow = (row + newRow) / 2;
+          const midCol = (col + newCol) / 2;
+          if (
+            GameState[newRow][newCol] === 0 && 
+            GameState[midRow][midCol] !== 0 && 
+            GameState[midRow][midCol] !== playerPiece &&
+            (isKing || (CurrentPlayer === 'red' ? dx < 0 : dx > 0))
+          ) {
+            return true;
+          }
+        }
+      }
+      return false;
     }
   });
 </script>
