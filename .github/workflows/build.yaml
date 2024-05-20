@@ -22,6 +22,10 @@ jobs:
       
             - name: "Use gcloud CLI"
               run: "gcloud info"
+
+            - name: "Docker auth"
+              run: |-
+                gcloud auth configure-docker europe-west3-docker.pkg.dev --quiet
         
         # - name: install the gcloud cli
         #   uses: google-github-actions/setup-gcloud@v2
