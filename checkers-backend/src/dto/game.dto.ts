@@ -8,14 +8,14 @@ enum GameResult {
 }
 
 enum Color {
-    Red = "red",
-    Black = "black"
+    Red = "Red",
+    Black = "Black"
 }
 
 export class Game {
     gameId: string;
     @IsNotEmpty()
-    roomId: number;
+    roomId: string;
     @IsNotEmpty()
     player1Color: Color;
     @IsNotEmpty()

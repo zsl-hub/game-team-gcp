@@ -1,9 +1,9 @@
 import { IsNotEmpty } from 'class-validator';
 
 enum Colors {
-    Red = "red",
-    Black = "black",
-    Random = "random"
+    Red = "Red",
+    Black = "Black",
+    Random = "Random"
 }
 
 export class Room {

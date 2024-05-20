@@ -1,7 +1,6 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 # inputs:
-  
 on: 
   workflow_dispatch
 jobs:
@@ -21,4 +20,5 @@ jobs:
       # - run: 
       #   command: |-
       #    docker tag europe-west3-docker.pkg.dev/checkers-zsl/checkers/frontend europe-west3-docker.pkg.dev/checkers-zsl/checkers/frontend:TAG
-      #    docker push europe-west3-docker.pkg.dev/checkers-zsl/checkers-front-end/game-team-gcp-frontend  Explore-GitHub-Actions:      
+      #    docker push europe-west3-docker.pkg.dev/checkers-zsl/checkers-front-end/game-team-gcp-frontend  Explore-GitHub-Actions:
+      - run: echo "🍏 This job's status is ${{ job.status }}.
