@@ -1,0 +1,25 @@
+name: trying to push to gcp
+
+on:
+    push:
+        branches:
+            - 'test-workflow'
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+        - name: install the gcloud cli
+          uses: google-github-actions/setup-gcloud@v0
+          with: 
+            project_id: ${{ secrets.GOOGLE_PROJECT }}
+            service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+            export_default_credentials: true
+
+        - name: build and push docker image
+          env:
+            GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+          run: |
+            gcloud auth configure-docker europe-west3-docker.pkg.dev
+            docker build -t europe-west3-docker.pkg.dev/$GOOGLE_PROJECT/checkers-actions .
+            docker push europe-west3-docker.pkg.dev/$GOOGLE_PROJECT/checkers-actions
