@@ -21,4 +21,10 @@ jobs:
         steps:
             - name: Deploy
               run: |-
-                gcloud run deploy $APP_NAME --region $REGION --image $REGION-docker.pkg.dev/$PROJECT_ID/$REGISTRY_NAME/$APP_NAME:$TAG_VERSION --platform "managed" --service-account $SERVICE_ACCOUNT_EMAIL --port 80 --quiet
+                gcloud run deploy $APP_NAME \
+                --region $REGION \
+                --image $REGION-docker.pkg.dev/$PROJECT_ID/$REGISTRY_NAME/$APP_NAME:$TAG_VERSION \
+                --platform "managed" \
+                --service-account $SERVICE_ACCOUNT_EMAIL \
+                --port 80 \
+                --quiet
