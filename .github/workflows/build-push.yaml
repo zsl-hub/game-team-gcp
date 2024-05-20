@@ -1,0 +1,50 @@
+name: pushing to gcp
+
+on: 
+    workflow_dispatch:  
+        inputs:
+            tag-version:
+                required: true
+
+env:
+    REGISTRY: europe-west3-docker.pkg.dev
+    FRONTEND_IMAGE: europe-west3-docker.pkg.dev/checkers-zsl/checkers/frontend
+    BACKEND_IMAGE: europe-west3-docker.pkg.dev/checkers-zsl/checkers/backend
+    TAG-VERSION: ${{ github.event.inputs.tag-version }}
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: "Checkout"
+              uses: "actions/checkout@v3"
+
+            - id: "auth"
+              uses: "google-github-actions/auth@v1"
+              with:
+                credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}"
+      
+            - name: "Set up Cloud SDK"
+              uses: "google-github-actions/setup-gcloud@v1"
+      
+            - name: "Use gcloud CLI"
+              run: "gcloud info"
+
+            - name: "Docker auth"
+              run: |-
+                gcloud auth configure-docker $REGISTRY --quiet
+            
+            
+            - name: Build Frontend
+              run: docker build . --tag $FRONTEND_IMAGE:$TAG-VERSION
+              working-directory: checkers-frontend
+
+            - name: Build Backend
+              run: docker build . --tag $BACKEND_IMAGE:$TAG-VERSION
+              working-directory: checkers-backend
+            
+            - name: Publish Frontend
+              run: docker push $FRONTEND_IMAGE:$TAG-VERSION
+            
+            - name: Publish Backend
+              run: docker push $BACKEND_IMAGE:$TAG-VERSION
