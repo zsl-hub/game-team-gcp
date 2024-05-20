@@ -13,7 +13,7 @@ env:
     TAG_VERSION: ${{ github.event.inputs.tag-version }}
 
 jobs:
-    deploy:
+    BuildAndPush:
         runs-on: ubuntu-latest
         steps:
             - name: "Checkout"
