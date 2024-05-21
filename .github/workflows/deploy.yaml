@@ -10,8 +10,10 @@ env:
     PROJECT_ID: checkers-zsl
     REGION: europe-west3
     APP_FRONT_NAME: checkers-front
+    APP_BACK_NAME: checkers-back
     ARTIFACT_REGISTRY_NAME: checkers
     FRONT_IMAGE: frontend
+    BACK_IMAGE: backend
     TAG_VERSION: ${{ github.event.inputs.tag-version }}
 
 
@@ -35,4 +37,4 @@ jobs:
                 gcloud run deploy $APP_FRONT_NAME --region $REGION --image $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY_NAME/$FRONT_IMAGE:$TAG_VERSION --port 80
             - name: Deploy backend
               run: |-
-                gcloud run deploy $APP_FRONT_NAME --region $REGION --image $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY_NAME/$FRONT_IMAGE:$TAG_VERSION --port 8080
+                gcloud run deploy $APP_BACK_NAME --region $REGION --image $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY_NAME/$BACK_IMAGE:$TAG_VERSION --port 8080
