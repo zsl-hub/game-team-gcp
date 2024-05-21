@@ -2,7 +2,7 @@ import { BadRequestException, Body, Controller, Get, InternalServerErrorExceptio
 import { Room } from "../../../dto/room.dto"
 import { GameMove, Board, PositionMove } from "../../../dto/gamemoves.dto"
 import { OtherRoutesService } from "../../../service/otherroutes.service"
-import { User } from "src/dto/user.dto";
+import { User } from "../../../dto/user.dto";
 
 @Controller("/api/v1")
 export class OtherRoutesController {
@@ -16,10 +16,12 @@ export class OtherRoutesController {
     }
 
     @Post("/makeMove")
-    async makeMove(@Body() body: PositionMove): Promise<number> {
+    async makeMove(@Body() body: PositionMove): Promise<string> {
         const response = await this.otherRoutesService.makeMove(body);
-        if (!response) { throw new BadRequestException(response); }
-        return 1;
+        if (response == "RedWon") { return "Red"; }
+        if (response == "BlackWon") { return "Black"; }
+        if (response != "Accepted") { throw new BadRequestException(response); }
+        return "Accepted";
     }
 
     @Put("/renameUser")
