@@ -33,7 +33,6 @@ jobs:
             - name: "Use gcloud CLI"
               run: "gcloud info"
 
-
             - name: Deploy
               run: |-
                 gcloud run deploy $APP_NAME \
