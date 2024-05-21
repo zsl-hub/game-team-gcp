@@ -36,9 +36,7 @@ jobs:
 
             - name: Deploy
               run: |-
-                gcloud run deploy ${{ secrets.DEV_APP_NAME }} \
-                --region ${{ secrets.REGION }} \
-                --image ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_NAME }}/${{ secrets.DEV_APP_IMAGE_NAME }}:${{ github.event.inputs.tag-version }} \
-                --port 80 \
-                --platform "managed" \
-                --service-account ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
+                gcloud run deploy checkers \
+                --region europe-west3 \
+                --image europe-west3-docker.pkg.dev/checkers-zsl/checkers/frontend:${{ github.event.inputs.tag-version }} \
+                --port 80
