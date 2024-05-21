@@ -164,18 +164,30 @@
 
   async function JoinRoom() {
     try {
-      $cookies.set('player', 'player2', '1h')
-      const response = await axios.get('http://localhost:8080/api/v1/game/');
-      state.rooms = response.data;
+        $cookies.set('player', 'player2', '1h');
+        const player = $cookies.get('player');
+        console.log('Player from cookies:', player);
 
-      if (response.data && Array.isArray(response.data)) {
-          response.data.forEach(room => {
-            router.push(`Game/${room.roomId}&&${room.player1Id}`);
-            store.roomId = room.roomId;
-          });
-        };
+        const response = await axios.get('http://localhost:8080/api/v1/game/');
+        console.log('Response data:', response.data);
+
+        state.rooms = response.data;
+
+        if (response.data && Array.isArray(response.data)) {
+            response.data.forEach(room => {
+                let playerId;
+                if (player === 'player1') {
+                    playerId = room.player1Id;
+                } else if (player === 'player2') {
+                    playerId = room.player2Id;
+                }
+                console.log('Player ID:', playerId);
+                router.push(`Game/${room.roomId}&&${playerId}`);
+                store.roomId = room.roomId;
+            });
+        }
     } catch (error) {
-      console.log(error);
+        console.log(error);
     }
   };
 
