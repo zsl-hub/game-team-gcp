@@ -42,4 +42,11 @@ export class MyGateway implements OnModuleInit{
         console.log('server received boardData'),
         console.log('boardData: ', boardData);
     }
+
+    @SubscribeMessage('playerid')
+    onPlayer1id(@MessageBody() playerid: string){
+        console.log('server received player1id'),
+        console.log('playerid: ', playerid);
+    }
+
 }

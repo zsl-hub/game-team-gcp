@@ -8,6 +8,7 @@
   <Card id="Form">
     <template #title>BOARD</template>
     <template #content>
+      <ChildComponent :roomId="roomId" />
 
       <p class="m-0" v-if='!state.isCreatingRoom'>
         <InputText name="BoardName" id="BoardName" v-model="boardName" aria-describedby="username-help" /><br>
@@ -41,9 +42,9 @@
             <!-- Delete Room:<input type='checkbox' v-model="room.delete" /> -->
           </div>
           <div class="Right">
-            <RouterLink to='Game/{{ room.roomId }}'>
-              <Button label="Submit" id="Join" @click="JoinRoom(room.roomId)">JOIN: </Button>
-            </RouterLink>
+
+            <Button label="Submit" id="Join" @click="JoinRoom()">JOIN: </Button>
+
           </div>
         </div>
 
@@ -196,7 +197,31 @@ import Button from 'primevue/button';
 import { ref } from 'vue';
 import axios from 'axios';
 import { reactive, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { store } from './store.js';
+
 const options = ref(['Random', 'Red', 'Black']);
+const router = useRouter(); 
+
+
+let roomId = ref(null); 
+
+async function JoinRoom() {
+  try {
+    const response = await axios.get('http://localhost:8080/api/v1/game/');
+    state.rooms = response.data;
+
+    if (response.data && Array.isArray(response.data)) {
+      response.data.forEach(room => {
+        router.push(`Game/${room.roomId}&&${room.player1Id}`);
+        store.roomId = room.roomId;
+      });
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 
 
@@ -215,7 +240,6 @@ onMounted(async () => {
 
   await refreshRooms();
 });
-
 
 
 </script>
@@ -250,20 +274,12 @@ const refreshRooms = async () => {
     console.error("Couldn't refresh the room list", error);
   }
 };
-// const JoinRoom = async () => {
-//   try {
-//     const response = await axios.get('http://localhost:8080/api/v1/Room/');
-//     state.rooms = response.data;
 
-
-
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
 
 
 export default {
+
+  
 
   data() {
     return {
@@ -295,34 +311,8 @@ export default {
   },
   methods: {
 
-
-    // DeleteRoom() {
-    //   console.log('deletion started');
-    //   this.rooms.forEach((rm, index) => {
-    //     if (rm.delete) {
-    //       checkedIndexes.push(index);
-    //     }
-    //   });
-    //   console.log('deletion in progres', checkedIndexes);
-
-    //   // Iterate over the checked indexes and remove corresponding rooms
-    //   checkedIndexes.forEach((index) => {
-    //     // Use `rooms` instead of `rooms.value` if you're directly accessing it from Vue data
-    //     rooms.value.splice(index, 1);
-    //   });
-
-
-    // const index = rooms.value.findIndex(room => room.name === newRoomName.value);
-    // if (index !== -1) {
-    //   rooms.value.splice(index, 1);
-    // }
-    // newRoomName.value = '';
-    // },
-
-    JoinRoom(roomId) {
     
-    this.$router.push({ name: 'Game', params: { roomId: roomId }});
-  },
+
 
 
     async createRoom() {

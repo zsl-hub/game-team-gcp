@@ -8,360 +8,429 @@
     <div class="Board" id="Board"></div>
     <div class="Options">
       <div class="FirstPlayer">
+        <p class='FirstResult' v-if="playerOneResult">{{ playerOneResult }}</p>
         <label for="username">1 Player: </label>
+        
         <InputText id="FirstUsername" v-model="value" />
       </div>
       <div class="Surrender">
-        <RouterLink to="/"><Button class="SurrenderButton" aria-label="Submit"> 🏳️</Button></RouterLink>
+
+        <Button class="SurrenderButton" aria-label="Submit" @click='surrender()'> 🏳️</Button>
+
       </div>
       <div class="SecondPlayer">
         <label for="username">2 Player: </label>
+
         <InputText id="SecondUsername" v-model="value" />
+        <p class='TwoResult' v-if="playerTwoResult">{{ playerTwoResult }}</p>
+
       </div>
     </div>
-    
+
   </main>
 </template>
 
 
 <style>
-  main {
-    background: rgb(3, 1, 27);
-    display: grid;
-    grid-template-columns: 25% 50% 25%;
-    width: 100%;
-    height: 100vh;
-    padding: 0;
-  }
+main {
+  background: rgb(3, 1, 27);
+  display: grid;
+  grid-template-columns: 25% 50% 25%;
+  width: 100%;
+  height: 100vh;
+  padding: 0;
+}
 
-  .ChatContainer {
-    align-content: end;
-    border: 2px solid black;
-  }
+.ChatContainer {
+  align-content: end;
+  border: 2px solid black;
+}
 
-  .SendButton {
-    border: 1px solid blue;
-    background-color: white;
-    color: rgb(36, 161, 222);
-    font-size: 150%;
-  }
+.SendButton {
+  border: 1px solid blue;
+  background-color: white;
+  color: rgb(36, 161, 222);
+  font-size: 150%;
+}
 
-  .Options {
-    padding-right: 50%;
-    margin-top: 25rem;
-  }
+.Options {
+  padding-right: 50%;
+  margin-top: 25rem;
+}
 
-  .FirstPlayer {
-    margin-bottom: 4rem;
-    text-align: center;
-  }
+.FirstPlayer {
+  margin-bottom: 4rem;
+  text-align: center;
+}
 
-  .SecondPlayer {
-    margin-top: 4rem;
-    text-align: center;
-  }
+.SecondPlayer {
+  margin-top: 4rem;
+  text-align: center;
+}
 
-  .Surrender {
-    text-align: center;
-  }
+.Surrender {
+  text-align: center;
+}
 
-  .SurrenderButton {
-    background-color: #193102;
-    font-size: 200%;
-  }
+.SurrenderButton {
+  background-color: #193102;
+  font-size: 200%;
+}
 
-  .Board {
-    margin: auto;
-    height: 50rem;
-    max-width: 50rem;
-    width: 50rem;
-    display: grid;
-    grid-template-columns: repeat(8, 6.2rem);
-    grid-template-rows: repeat(8, 6.21rem);
-    border: 3px solid #818cf8;
-    background-color: white;
-  }
+.Board {
+  margin: auto;
+  height: 50rem;
+  max-width: 50rem;
+  width: 50rem;
+  display: grid;
+  grid-template-columns: repeat(8, 6.2rem);
+  grid-template-rows: repeat(8, 6.21rem);
+  border: 3px solid #818cf8;
+  background-color: white;
+}
 
-  .RedPiece {
-    width: 5rem;
-    height: 5rem;
-    background-color: red;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.RedPiece {
+  width: 5rem;
+  height: 5rem;
+  background-color: red;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .BlackPiece {
-    width: 5rem;
-    height: 5rem;
-    background-color: black;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.BlackPiece {
+  width: 5rem;
+  height: 5rem;
+  background-color: black;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .Piece {
-    width: 5rem;
-    height: 5rem;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.Piece {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .DarkSquare {
-    background-color: rgb(189, 189, 189);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.DarkSquare {
+  background-color: rgb(189, 189, 189);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .LightSquare {
-    background-color: #08440d;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.LightSquare {
+  background-color: #08440d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .Selected {
-    border: 5px solid cyan;
-  }
+.Selected {
+  border: 5px solid cyan;
+}
 
-  .King {
-    border: 5px solid gold;
-  }
+.King {
+  border: 5px solid gold;
+}
+
+.FirstResult, .TwoResult{
+  font-size: 5rem;
+  
+}
 </style>
 
 
 <script setup>
-  import InputText from 'primevue/inputtext';
-  import Button from 'primevue/button';
-  import { onMounted } from 'vue';
-  import io from 'socket.io-client';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
+import { onMounted, reactive } from 'vue';
+import io from 'socket.io-client';
 
 
-  onMounted(() => {
-    const Board = document.getElementById("Board");
 
-    let CurrentPlayer = 'red';
-    let SelectedCell = null;
-    let GameState = Array(8).fill().map(() => Array(8).fill(0));
-    let MultiCapture = false;
+onMounted(() => {
 
-    InitializeBoard();
 
-    function InitializeBoard() {
-      for (let row = 0; row < 8; row++) {
-        for (let col = 0; col < 8; col++) {
-          const cell = document.createElement("div");
-          cell.classList.add("cell");
 
-          if ((row + col) % 2 === 0) {
-            cell.classList.add("LightSquare");
-          } else {
-            cell.classList.add("DarkSquare");
 
-            if (row < 3) {
-              cell.classList.add("Occupied");
-              cell.dataset.color = 'black';
-              cell.appendChild(CreatePiece('Black'));
-              GameState[row][col] = 2;
-            } else if (row > 4) {
-              cell.classList.add("Occupied");
-              cell.dataset.color = 'red';
-              cell.appendChild(CreatePiece('Red'));
-              GameState[row][col] = 1;
-            }
+  const Board = document.getElementById("Board");
+
+
+
+  let CurrentPlayer = 'red';
+  let SelectedCell = null;
+  let GameState = Array(8).fill().map(() => Array(8).fill(0));
+  let MultiCapture = false;
+
+  InitializeBoard();
+
+  function InitializeBoard() {
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+
+        if ((row + col) % 2 === 0) {
+          cell.classList.add("LightSquare");
+        } else {
+          cell.classList.add("DarkSquare");
+
+          if (row < 3) {
+            cell.classList.add("Occupied");
+            cell.dataset.color = 'black';
+            cell.appendChild(CreatePiece('Black'));
+            GameState[row][col] = 2;
+          } else if (row > 4) {
+            cell.classList.add("Occupied");
+            cell.dataset.color = 'red';
+            cell.appendChild(CreatePiece('Red'));
+            GameState[row][col] = 1;
           }
-
-          cell.dataset.row = row;
-          cell.dataset.col = col;
-          cell.addEventListener("click", CellClicked);
-          Board.appendChild(cell);
         }
+
+        cell.dataset.row = row;
+        cell.dataset.col = col;
+        cell.addEventListener("click", CellClicked);
+        Board.appendChild(cell);
       }
-      console.log(GameState)
     }
+    console.log(GameState)
+  }
 
-    function CreatePiece(color) {
-      const Piece = document.createElement("div");
-      Piece.classList.add("Piece");
-      Piece.classList.add(color + "Piece");
-      return Piece;
-    }
+  function CreatePiece(color) {
+    const Piece = document.createElement("div");
+    Piece.classList.add("Piece");
+    Piece.classList.add(color + "Piece");
+    return Piece;
+  }
 
-    function CellClicked() {
-      const ClickedCell = this;
+  function CellClicked() {
+    const ClickedCell = this;
 
-      if (SelectedCell) {
-        if (IsMoveAllowed(SelectedCell, ClickedCell)) {
-          if (!MultiCapture) {
-            MovePiece(SelectedCell, ClickedCell);
-            CheckForPromotion(ClickedCell);
-            SwitchPlayer();
-          }
-        } else if (IsCaptureAllowed(SelectedCell, ClickedCell)) {
-          CapturePiece(SelectedCell, ClickedCell);
+    if (SelectedCell) {
+      if (IsMoveAllowed(SelectedCell, ClickedCell)) {
+        if (!MultiCapture) {
+          MovePiece(SelectedCell, ClickedCell);
           CheckForPromotion(ClickedCell);
-
-          if (IsAnotherCapturePossible(ClickedCell)) {
-            SelectPiece(ClickedCell);
-            MultiCapture = true;
-          } else {
-            MultiCapture = false;
-            SwitchPlayer();
-          }
-        } else if (!MultiCapture && ClickedCell.dataset.color === CurrentPlayer) {
-          SelectPiece(ClickedCell);
+          SwitchPlayer();
         }
-      } else if (ClickedCell.dataset.color === CurrentPlayer) {
+      } else if (IsCaptureAllowed(SelectedCell, ClickedCell)) {
+        CapturePiece(SelectedCell, ClickedCell);
+        CheckForPromotion(ClickedCell);
+
+        if (IsAnotherCapturePossible(ClickedCell)) {
+          SelectPiece(ClickedCell);
+          MultiCapture = true;
+        } else {
+          MultiCapture = false;
+          SwitchPlayer();
+        }
+      } else if (!MultiCapture && ClickedCell.dataset.color === CurrentPlayer) {
         SelectPiece(ClickedCell);
       }
+    } else if (ClickedCell.dataset.color === CurrentPlayer) {
+      SelectPiece(ClickedCell);
     }
+  }
 
-    function UnSelectPiece() {
-      if (SelectedCell) {
-        SelectedCell.classList.remove("Selected");
-        SelectedCell = null;
+  function UnSelectPiece() {
+    if (SelectedCell) {
+      SelectedCell.classList.remove("Selected");
+      SelectedCell = null;
+    }
+  }
+
+  function SelectPiece(cell) {
+    UnSelectPiece();
+    cell.classList.add("Selected");
+    SelectedCell = cell;
+  }
+
+  function IsMoveAllowed(fromCell, toCell) {
+    const direction = CurrentPlayer === 'red' ? -1 : 1;
+    const fromRow = parseInt(fromCell.dataset.row);
+    const toRow = parseInt(toCell.dataset.row);
+    const fromCol = parseInt(fromCell.dataset.col);
+    const toCol = parseInt(toCell.dataset.col);
+
+    const isKing = fromCell.firstChild.classList.contains('King');
+
+    return isKing
+      ? Math.abs(fromRow - toRow) === 1 && Math.abs(fromCol - toCol) === 1 && GameState[toRow][toCol] === 0
+      : fromRow + direction === toRow && Math.abs(fromCol - toCol) === 1 && GameState[toRow][toCol] === 0;
+  }
+
+  function MovePiece(fromCell, toCell) {
+    const fromRow = parseInt(fromCell.dataset.row);
+    const fromCol = parseInt(fromCell.dataset.col);
+    const toRow = parseInt(toCell.dataset.row);
+    const toCol = parseInt(toCell.dataset.col);
+
+    const isKing = fromCell.firstChild.classList.contains('King');
+
+    fromCell.innerHTML = '';
+    fromCell.classList.remove('Occupied');
+    fromCell.dataset.color = '';
+    GameState[fromRow][fromCol] = 0;
+
+    const newPiece = CreatePiece(CurrentPlayer.charAt(0).toUpperCase() + CurrentPlayer.slice(1));
+
+    if (isKing) newPiece.classList.add('King');
+    toCell.appendChild(newPiece);
+    toCell.classList.add('Occupied');
+    toCell.dataset.color = CurrentPlayer;
+    GameState[toRow][toCol] = isKing ? (CurrentPlayer === 'black' ? 4 : 3) : (CurrentPlayer === 'black' ? 2 : 1);
+
+    // console.log(GameState)
+    const socket = io('http://localhost:8080');
+    console.log("testing move");
+    socket.emit('boardData', {
+      msg: 'trying to send board',
+      board: Board
+    });
+
+    UnSelectPiece();
+
+
+
+  }
+
+  function SwitchPlayer() {
+    CurrentPlayer = CurrentPlayer === 'red' ? 'black' : 'red';
+  }
+
+  function IsCaptureAllowed(fromCell, toCell) {
+    const fromRow = parseInt(fromCell.dataset.row);
+    const toRow = parseInt(toCell.dataset.row);
+    const fromCol = parseInt(fromCell.dataset.col);
+    const toCol = parseInt(toCell.dataset.col);
+
+    const direction = CurrentPlayer === 'red' ? -1 : 1;
+    const isKing = fromCell.firstChild.classList.contains('King');
+
+    if (Math.abs(fromRow - toRow) === 2 && Math.abs(fromCol - toCol) === 2) {
+      const capturedRow = (fromRow + toRow) / 2;
+      const capturedCol = (fromCol + toCol) / 2;
+
+      if (!isKing && direction !== (toRow - fromRow) / Math.abs(toRow - fromRow)) {
+        return false;
       }
+
+      return GameState[capturedRow][capturedCol] !== 0 && GameState[capturedRow][capturedCol] !== (CurrentPlayer === 'red' ? 1 : 2) && GameState[toRow][toCol] === 0;
     }
+    return false;
 
-    function SelectPiece(cell) {
-      UnSelectPiece();
-      cell.classList.add("Selected");
-      SelectedCell = cell;
+
+  }
+
+  function CapturePiece(fromCell, toCell) {
+    const capturedRow = (parseInt(fromCell.dataset.row) + parseInt(toCell.dataset.row)) / 2;
+    const capturedCol = (parseInt(fromCell.dataset.col) + parseInt(toCell.dataset.col)) / 2;
+    const capturedCell = document.querySelector(`[data-row='${capturedRow}'][data-col='${capturedCol}']`);
+    capturedCell.innerHTML = '';
+    capturedCell.classList.remove('Occupied');
+    capturedCell.dataset.color = '';
+    GameState[capturedRow][capturedCol] = 0;
+
+    MovePiece(fromCell, toCell);
+
+
+
+  }
+
+  function CheckForPromotion(cell) {
+    const row = parseInt(cell.dataset.row);
+    if ((CurrentPlayer === 'red' && row === 0) || (CurrentPlayer === 'black' && row === 7)) {
+      cell.firstChild.classList.add('King');
+      GameState[row][parseInt(cell.dataset.col)] = CurrentPlayer === 'black' ? 4 : 3;
     }
+  }
 
-    function IsMoveAllowed(fromCell, toCell) {
-      const direction = CurrentPlayer === 'red' ? -1 : 1;
-      const fromRow = parseInt(fromCell.dataset.row);
-      const toRow = parseInt(toCell.dataset.row);
-      const fromCol = parseInt(fromCell.dataset.col);
-      const toCol = parseInt(toCell.dataset.col);
+  function IsAnotherCapturePossible(cell) {
+    const row = parseInt(cell.dataset.row);
+    const col = parseInt(cell.dataset.col);
 
-      const isKing = fromCell.firstChild.classList.contains('King');
+    const directions = [
+      [2, 2], [2, -2], [-2, 2], [-2, -2]
+    ];
 
-      return isKing
-        ? Math.abs(fromRow - toRow) === 1 && Math.abs(fromCol - toCol) === 1 && GameState[toRow][toCol] === 0
-        : fromRow + direction === toRow && Math.abs(fromCol - toCol) === 1 && GameState[toRow][toCol] === 0;
-    }
+    const isKing = cell.firstChild.classList.contains('King');
+    const playerPiece = GameState[row][col];
 
-    function MovePiece(fromCell, toCell) {
-      const fromRow = parseInt(fromCell.dataset.row);
-      const fromCol = parseInt(fromCell.dataset.col);
-      const toRow = parseInt(toCell.dataset.row);
-      const toCol = parseInt(toCell.dataset.col);
-
-      const isKing = fromCell.firstChild.classList.contains('King');
-
-      fromCell.innerHTML = '';
-      fromCell.classList.remove('Occupied');
-      fromCell.dataset.color = '';
-      GameState[fromRow][fromCol] = 0;
-
-      const newPiece = CreatePiece(CurrentPlayer.charAt(0).toUpperCase() + CurrentPlayer.slice(1));
-      
-      if (isKing) newPiece.classList.add('King');
-      toCell.appendChild(newPiece);
-      toCell.classList.add('Occupied');
-      toCell.dataset.color = CurrentPlayer;
-      GameState[toRow][toCol] = isKing ? (CurrentPlayer === 'black' ? 4 : 3) : (CurrentPlayer === 'black' ? 2 : 1);
-
-      // console.log(GameState)
-      const socket = io('http://localhost:8080');
-      console.log("testing move");
-      socket.emit('boardData', {
-        msg: 'trying to send board',
-        board: Board
-      });
-
-      UnSelectPiece();
-
-     
-
-    }
-
-    function SwitchPlayer() {
-      CurrentPlayer = CurrentPlayer === 'red' ? 'black' : 'red';
-    }
-
-    function IsCaptureAllowed(fromCell, toCell) {
-      const fromRow = parseInt(fromCell.dataset.row);
-      const toRow = parseInt(toCell.dataset.row);
-      const fromCol = parseInt(fromCell.dataset.col);
-      const toCol = parseInt(toCell.dataset.col);
-
-      const direction = CurrentPlayer === 'red' ? -1 : 1;
-      const isKing = fromCell.firstChild.classList.contains('King');
-
-      if (Math.abs(fromRow - toRow) === 2 && Math.abs(fromCol - toCol) === 2) {
-        const capturedRow = (fromRow + toRow) / 2;
-        const capturedCol = (fromCol + toCol) / 2;
-
-        if (!isKing && direction !== (toRow - fromRow) / Math.abs(toRow - fromRow)) {
-          return false;
+    for (const [dx, dy] of directions) {
+      const newRow = row + dx;
+      const newCol = col + dy;
+      if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+        const midRow = (row + newRow) / 2;
+        const midCol = (col + newCol) / 2;
+        if (
+          GameState[newRow][newCol] === 0 &&
+          GameState[midRow][midCol] !== 0 &&
+          GameState[midRow][midCol] !== playerPiece &&
+          (isKing || (CurrentPlayer === 'red' ? dx < 0 : dx > 0))
+        ) {
+          return true;
         }
-
-        return GameState[capturedRow][capturedCol] !== 0 && GameState[capturedRow][capturedCol] !== (CurrentPlayer === 'red' ? 1 : 2) && GameState[toRow][toCol] === 0;
-      }
-      return false;
-
-
-    }
-
-    function CapturePiece(fromCell, toCell) {
-      const capturedRow = (parseInt(fromCell.dataset.row) + parseInt(toCell.dataset.row)) / 2;
-      const capturedCol = (parseInt(fromCell.dataset.col) + parseInt(toCell.dataset.col)) / 2;
-      const capturedCell = document.querySelector(`[data-row='${capturedRow}'][data-col='${capturedCol}']`);
-      capturedCell.innerHTML = '';
-      capturedCell.classList.remove('Occupied');
-      capturedCell.dataset.color = '';
-      GameState[capturedRow][capturedCol] = 0;
-
-      MovePiece(fromCell, toCell);
-
-      
-
-    }
-
-    function CheckForPromotion(cell) {
-      const row = parseInt(cell.dataset.row);
-      if ((CurrentPlayer === 'red' && row === 0) || (CurrentPlayer === 'black' && row === 7)) {
-        cell.firstChild.classList.add('King');
-        GameState[row][parseInt(cell.dataset.col)] = CurrentPlayer === 'black' ? 4 : 3;
       }
     }
+    return false;
+  }
 
-    function IsAnotherCapturePossible(cell) {
-      const row = parseInt(cell.dataset.row);
-      const col = parseInt(cell.dataset.col);
+});
 
-      const directions = [
-        [2, 2], [2, -2], [-2, 2], [-2, -2]
-      ];
+</script>
 
-      const isKing = cell.firstChild.classList.contains('King');
-      const playerPiece = GameState[row][col];
+<script>
+import axios from 'axios';
+import { store } from './store.js';
 
-      for (const [dx, dy] of directions) {
-        const newRow = row + dx;
-        const newCol = col + dy;
-        if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-          const midRow = (row + newRow) / 2;
-          const midCol = (col + newCol) / 2;
-          if (
-            GameState[newRow][newCol] === 0 && 
-            GameState[midRow][midCol] !== 0 && 
-            GameState[midRow][midCol] !== playerPiece &&
-            (isKing || (CurrentPlayer === 'red' ? dx < 0 : dx > 0))
-          ) {
-            return true;
-          }
-        }
+let state = reactive({
+  gameEnded: null,
+})
+export default {
+
+  data() {
+    return {
+      playerOneResult: '',
+      playerTwoResult: '',
+      props: ['roomId'],
+    };
+
+  },
+  
+  methods: {
+
+
+    async exit() {
+      try {
+        await axios.delete(`http://localhost:8080/api/v1/game/${store.roomId}`);
+        console.log(this.roomId);
+
+        // this.$router.push('/');
+      } catch (error) {
+        console.error(error);
       }
-      return false;
+    },
+    async surrender() {
+      this.playerOneResult = 'Win';
+      this.playerTwoResult = 'Lose';
     }
-  });
+
+
+
+
+
+
+
+
+
+  }
+}
 </script>
