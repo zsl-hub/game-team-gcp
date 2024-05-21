@@ -21,26 +21,27 @@
       </p>
     </template>
   </Card>
+  
   <Card id="List">
     <template #title>ROOM LIST</template>
     <template #content>
       <p class="m-1">
       <div class="RoomList" v-if="state.rooms">
+
         <div v-for="(room, index) in state.rooms" :key="index" id="Room">
           <div class="Left">
             <div class="RoomName">RoomName: {{ room.roomName }}</div>
             <div class="Amount">Players: 1/2</div>
-            <!-- Delete Room:<input type='checkbox' v-model="room.delete" /> -->
           </div>
           <div class="Right">
-            <Button label="Submit" id="Join" @click="JoinRoom()">JOIN</Button>
+            <Button label="Submit" id="Join" @click="JoinRoom(room.roomId)">JOIN</Button>
           </div>
         </div>
       </div><br><br>
       </p>
     </template>
   </Card>
-  <!-- <Rules></Rules> -->
+
   <Card id="Rules">
     <template #title>Rules</template>
     <template #content>
@@ -157,7 +158,6 @@
   import { useRouter } from 'vue-router';
   import { store } from './store.js';
 
-
   const options = ref(['Random', 'Red', 'Black']);
   const router = useRouter();
   let roomId = ref(null);
@@ -178,8 +178,10 @@
       console.log(error);
     }
   };
+
   onMounted(async () => {
     const socket = io('http://localhost:8080');
+
     socket.on('onMessage', (message) => {
       state.messages.push(message);
       socket.emit('message', {
@@ -194,19 +196,15 @@
 
 <script>
   import io from 'socket.io-client';
-  // const boardName = ref('');
-  // const selectedColor = ref('');
+
   const rooms = ref([]);
+
   let state = reactive({
     boardName: '',
     selectColor: '',
     isCreatingRoom: false,
   });
-  // const createRoom = () => {
-  // rooms.value.push({ name: this.boardName, players: 1 });
-  // newRoomName.value = '';
-  // };
-  var checkedIndexes = [];
+  
   const refreshRooms = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/v1/getAllAvailableRooms/');
@@ -217,6 +215,7 @@
       console.error("Couldn't refresh the room list", error);
     }
   };
+
   export default {
     data() {
       return {
@@ -225,6 +224,7 @@
         socket: null // Define socket as a component property
       };
     },
+    
     async mounted() {
       refreshRooms()
       // Connect to the Socket.IO server
@@ -241,12 +241,39 @@
         console.log("0weifji0ewr", message);
       });
     },
+    
     methods: {
       async createRoom() {
         console.log('testing this: ', this)
         rooms.value.push({ name: this.boardName, players: 1, delete: false });
         await refreshRooms();
       },
+
+      JoinRoom(roomId) {
+        this.$cookies.set('player', 'player2', '1h');
+        this.$router.push({ name: 'Game', params: { roomId: roomId } });
+      },
+
+      async createRoom() {
+        try{
+          const response = await axios.post('http://localhost:8080/api/v1/Room/', {
+            roomName: this.boardName,
+            startingColor: this.selectColor,
+            isAvailable: 1,
+          });
+
+          const player1Id = response.data.player1Id;
+          this.$cookies.set('player', 'player1', '1h');
+          this.$router.push({ name: 'Game', params: { roomId: response.data.roomId, playerId: player1Id } });
+          await refreshRooms();
+          state.isCreatingRoom = true;
+        } catch (error) {
+          console.error("Couldn't create room", error);
+        }
+          console.log('testing this: ', this)
+          rooms.value.push({ name: this.boardName, players: 1, delete: false });
+        },
+
       async newRoom() {
         try {
           const response = await axios.post('http://localhost:8080/api/v1/Room/', {
@@ -259,6 +286,7 @@
         } catch (error) {
           console.error("Couldn't get all available rooms", error);
         }
+
         console.log('starting ')
         const socket = io('http://localhost:8080');
         console.log("test connect");
