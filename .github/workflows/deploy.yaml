@@ -40,4 +40,4 @@ jobs:
                 gcloud run deploy $APP_BACK_NAME --region $REGION --image $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY_NAME/$BACK_IMAGE:$TAG_VERSION --port 8080
             - name: set allow-unauthenticated
               run: |-
-                gcloud run services add-iam-policy-binding $APP_FRONT_NAME --member="allUsers" --role="roles/cloudfunctions.invoker"
+                gcloud run services add-iam-policy-binding $APP_FRONT_NAME --member="allUsers" --role="roles/cloudfunctions.invoker" --region $REGION
