@@ -7,11 +7,11 @@ on:
                 required: true
 
 env:
-    PROJECT_ID: ${{ secrets.PROJECT_ID }}
-    REGION: ${{ secrets.REGION }}
-    APP_NAME: ${{ secrets.DEV_APP_NAME }}
-    REGISTRY_NAME: ${{ secrets.ARTIFACT_REGISTRY_NAME }}
-    SERVICE_ACCOUNT_EMAIL: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
+    PROJECT_ID: checkers-zsl
+    REGION: europe-west3
+    APP_FRONT_NAME: checkers-front
+    ARTIFACT_REGISTRY_NAME: checkers
+    FRONT_IMAGE: frontend
     TAG_VERSION: ${{ github.event.inputs.tag-version }}
 
 
@@ -30,6 +30,9 @@ jobs:
             - name: "Set up Cloud SDK"
               uses: "google-github-actions/setup-gcloud@v1"
 
-            - name: Deploy
+            - name: Deploy frontend
               run: |-
-                gcloud run deploy checkers --region europe-west3 --image europe-west3-docker.pkg.dev/checkers-zsl/checkers/frontend:1.0.4 --port 80
+                gcloud run deploy $APP_FRONT_NAME --region $REGION --image $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY_NAME/$FRONT_IMAGE:$TAG_VERSION --port 80
+            - name: Deploy backend
+              run: |-
+                gcloud run deploy $APP_FRONT_NAME --region $REGION --image $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY_NAME/$FRONT_IMAGE:$TAG_VERSION --port 8080
