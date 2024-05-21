@@ -16,7 +16,6 @@ env:
     BACK_IMAGE: backend
     TAG_VERSION: ${{ github.event.inputs.tag-version }}
 
-
 jobs:
     deploy:
         runs-on: ubuntu-latest
@@ -31,7 +30,7 @@ jobs:
       
             - name: "Set up Cloud SDK"
               uses: "google-github-actions/setup-gcloud@v1"
-
+              
             - name: Deploy frontend
               run: |-
                 gcloud run deploy $APP_FRONT_NAME --region $REGION --image $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY_NAME/$FRONT_IMAGE:$TAG_VERSION --allow-unauthenticated --port 80
