@@ -21,6 +21,7 @@ export class GameRepository {
         body.gameId = uuidv4();
         body.player1Id = uuidv4();
         body.player2Id = uuidv4();
+        if (body.player1Color == "Random"){body.player1Color = (["Red","Black"])[Math.floor(Math.random()*([1,2]).length)]}
         const taskKey = this.datastore.key('game');
         const entity = {
             key: taskKey,

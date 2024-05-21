@@ -2,7 +2,7 @@ import { Datastore, PropertyFilter } from '@google-cloud/datastore';
 import { Room } from '../dto/room.dto'
 import { PositionMove } from "../dto/gamemoves.dto"
 import { Body } from '@nestjs/common';
-import { user } from 'src/dto/user.dto';
+import { User } from 'src/dto/user.dto';
 
 export class OtherRoutesRepository {
     datastore = new Datastore({ databaseId: 'checkers-datastore', projectId: "checkers-zsl" });
@@ -14,7 +14,7 @@ export class OtherRoutesRepository {
         return result[0];
     }
 
-    async renameUser(@Body() body: user): Promise<number> {
+    async renameUser(@Body() body: User): Promise<number> {
         const query = this.datastore.createQuery("game").filter(new PropertyFilter("roomId", "=", body.roomId));
         const [game, queryInfo] = await query.run();
         if (game[0].player1Id) {
