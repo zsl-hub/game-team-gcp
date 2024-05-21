@@ -7,17 +7,13 @@ enum GameResult {
     Ongoing = "ongoing"
 }
 
-enum Color {
-    Red = "Red",
-    Black = "Black"
-}
 
 export class Game {
     gameId: string;
     @IsNotEmpty()
     roomId: string;
     @IsNotEmpty()
-    player1Color: Color;
+    player1Color: string;
     @IsNotEmpty()
     player1Name: string;
     player1Id: string;
