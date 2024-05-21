@@ -19,18 +19,19 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v3
+            - name: "Checkout"
+              uses: "actions/checkout@v3"
 
-            # Authenticate with Google Cloud
             - id: "auth"
-              uses: google-github-actions/auth@v1
+              uses: "google-github-actions/auth@v1"
               with:
-                credentials_json: "${{ secrets.GCP_SA_KEY }}"
-
-            # Setup gcloud CLI/SDK
-            - name: Set up Cloud SDK
-              uses: google-github-actions/setup-gcloud@v1
+                credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}"
+      
+            - name: "Set up Cloud SDK"
+              uses: "google-github-actions/setup-gcloud@v1"
+      
+            - name: "Use gcloud CLI"
+              run: "gcloud info"
 
             - name: Deploy
               run: |-
