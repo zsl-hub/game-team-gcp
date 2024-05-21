@@ -3,13 +3,13 @@ import { Room } from "../dto/room.dto"
 import { Body, Injectable } from "@nestjs/common";
 import { PositionMove } from "../dto/gamemoves.dto";
 import { start } from "repl";
-import { user } from "src/dto/user.dto";
+import { User } from "src/dto/user.dto";
 
 @Injectable()
 export class OtherRoutesService {
     constructor(private readonly OtherRoutesRepository: OtherRoutesRepository) { }
 
-    async renameUser(@Body() body: user): Promise<number> {
+    async renameUser(@Body() body: User): Promise<number> {
         const response = await this.OtherRoutesRepository.renameUser(body);
         if (!response) { return 0; }
         return 1;

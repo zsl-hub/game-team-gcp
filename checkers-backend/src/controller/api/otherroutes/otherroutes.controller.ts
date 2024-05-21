@@ -2,7 +2,7 @@ import { BadRequestException, Body, Controller, Get, InternalServerErrorExceptio
 import { Room } from "../../../dto/room.dto"
 import { GameMove, Board, PositionMove } from "../../../dto/gamemoves.dto"
 import { OtherRoutesService } from "../../../service/otherroutes.service"
-import { user } from "src/dto/user.dto";
+import { User } from "src/dto/user.dto";
 
 @Controller("/api/v1")
 export class OtherRoutesController {
@@ -23,7 +23,7 @@ export class OtherRoutesController {
     }
 
     @Put("/renameUser")
-    async renameUser(@Body() body: user): Promise<number> {
+    async renameUser(@Body() body: User): Promise<number> {
         const response = await this.otherRoutesService.renameUser(body);
         if (!response) { return 0; }
         return 1;
