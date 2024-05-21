@@ -7,14 +7,14 @@ export class GameMovesRepository {
 
     async findAll(): Promise<GameMove[]> {
         const query = this.datastore.createQuery("gameMoves");
-        const [rooms, queryInfo] = await query.run();
-        return rooms;
+        const [gameMoves, queryInfo] = await query.run();
+        return gameMoves;
     }
 
     async findOne(id: string): Promise<GameMove> {
         const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter(("gameMoveId"), "=", id))
-        const [rooms, queryInfo] = await query.run();
-        return rooms[0];
+        const [gameMoves, queryInfo] = await query.run();
+        return gameMoves[0];
     }
 
     async add(body: GameMove): Promise<string> {
@@ -32,8 +32,8 @@ export class GameMovesRepository {
         body.gameMoveId = id;
 
         const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter("gameMoveId", "=", id));
-        const [rooms, queryInfo] = await query.run();
-        const taskKey = rooms[0][this.datastore.KEY];
+        const [gameMoves, queryInfo] = await query.run();
+        const taskKey = gameMoves[0][this.datastore.KEY];
         const entity = {
             key: taskKey,
             data: body,
@@ -44,8 +44,8 @@ export class GameMovesRepository {
 
     async delete(id: string): Promise<string> {
         const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter("gameMoveId", "=", id));
-        const [rooms, queryInfo] = await query.run();
-        await this.datastore.delete(rooms[0][this.datastore.KEY]);
+        const [gameMoves, queryInfo] = await query.run();
+        await this.datastore.delete(gameMoves[0][this.datastore.KEY]);
         return "Success";
     }
 }
