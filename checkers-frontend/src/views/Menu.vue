@@ -170,7 +170,7 @@ import axios from 'axios';
 import { reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { store } from './store.js';
-import uuid from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 
 const options = ref(['Random', 'Red', 'Black']);
 const router = useRouter();
@@ -178,9 +178,6 @@ let roomId = ref(null);
 
 async function JoinRoom() {
   try {
-    $cookies.set('player', 'player2', '1h');
-    const player = $cookies.get('player');
-    console.log('Player from cookies:', player);
 
     const response = await axios.get('http://localhost:8080/api/v1/game/');
     console.log('Response data:', response.data);
@@ -207,7 +204,11 @@ async function JoinRoom() {
 };
 
 onMounted(async () => {
-  const id = uuid();
+  console.log(uuidv4());
+  if ($cookies.get("playerId") == null) {
+    this.$cookies.set('playerId', uuidv4(), "1h");
+  }
+
   const socket = io('http://localhost:8080');
 
   socket.on('onMessage', (message) => {
@@ -284,11 +285,14 @@ export default {
 
     async newRoom() {
       try {
-        const response = await axios.post('http://localhost:8080/api/v1/Room/', {
+        console.log($cookies.get("playerId"))
+        const response = await axios.post('http://localhost:8080/api/v1/Room/createRoom', {
           roomName: this.boardName,
           startingColor: this.selectColor,
-          isAvailable: 1,
+          isAvailable: true,
+          player1Id: this.$cookies.get("playerId")
         });
+        console.log(response);
         state.isCreatingRoom = true;
         await refreshRooms();
       } catch (error) {

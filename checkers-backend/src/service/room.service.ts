@@ -31,7 +31,7 @@ export class RoomService {
     async createRoom(body: Room): Promise<Room> {
         body.roomId = uuidv4();
         body.isAvailable = true;
-        body.user2Id = null;
+        body.player2Id = null;
         if (body.startingColor == "Random"){body.startingColor = Colors[(["Red","Black"])[Math.floor(Math.random()*([1,2]).length)]]}
         const response = await this.RoomRepository.createRoom(body);
         return response;
