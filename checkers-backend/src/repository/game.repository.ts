@@ -42,7 +42,7 @@ export class GameRepository {
     }
 
     async delete(id: string): Promise<string> {
-        const query = this.datastore.createQuery("game").filter(new PropertyFilter("gameId", "=", id));
+        const query = this.datastore.createQuery("game").filter(new PropertyFilter("roomId", "=", id));
         const [game, queryInfo] = await query.run();
         await this.datastore.delete(game[0][this.datastore.KEY]);
         return "Success";

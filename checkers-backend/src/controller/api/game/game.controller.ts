@@ -27,14 +27,13 @@ export class GameController {
         return await this.gameService.update(id, body);
     }
 
-    @Delete(":id")
+    @Delete("/:id")
     async delete(@Param('id') id: string): Promise<string> {
         return await this.gameService.delete(id)
     }
 
     @Post("/join")
-    async join(@Body() body: Game)
-    {
+    async join(@Body() body: Game) {
         return this.gameService.join(body, body);
     }
 }
