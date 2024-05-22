@@ -34,7 +34,7 @@
             <div class="Amount">Players: 1/2</div>
           </div>
           <div class="Right">
-            <Button label="Submit" id="Join" @click="JoinRoom(room.roomId,room.player1Id)">JOIN</Button>
+            <Button label="Submit" id="Join" @click="JoinRoom(room.roomId, room.player1Id)">JOIN</Button>
           </div>
         </div>
       </div><br><br>
@@ -178,26 +178,18 @@ let roomId = ref(null);
 
 onMounted(async () => {
   if ($cookies.get("playerId") == null) {
-    this.$cookies.set('playerId', uuidv4(), "1h");
+    $cookies.set('playerId', uuidv4(), "1h");
   }
 
-  const socket = io(import.meta.env.VITE_BACK_HOST);
-
-  socket.on('Connects', (message) => {
-    state.messages.push(message);
-    socket.emit('Connects', {
-      content: message,
-    });
-  });
   await refreshRooms();
 });
 
 
 async function JoinRoom(roomId, player1Id) {
   try {
-    const socket = io('http://localhost:8080');
-    
-    const response = await axios.post('http://localhost:8080/api/v1/game/join/', {
+    const socket = io(import.meta.env.VITE_BACK_HOST);
+
+    const response = await axios.post(`${import.meta.env.VITE_BACK_HOST}/api/v1/game/join/`, {
       player1Id: player1Id,
       player2Id: $cookies.get("playerId"),
       roomId: roomId
@@ -221,7 +213,7 @@ const rooms = ref([]);
 
 const refreshRooms = async () => {
   try {
-    const response = await axios.get(import.meta.env.VITE_BACK_HOST +  '/api/v1/getAllAvailableRooms/');
+    const response = await axios.get(import.meta.env.VITE_BACK_HOST + '/api/v1/getAllAvailableRooms/');
     state.rooms = response.data;
     const roomIds = state.rooms.map(room => room.roomId);
   } catch (error) {
@@ -244,38 +236,16 @@ export default {
     };
   },
 
-  async mounted() {
-    refreshRooms()
-    // Connect to the Socket.IO server
-    const socket = io('http://localhost:8080'); // Change the URL to your backend URL
-    // Listen for messages from the server
-    console.log("before");
-    socket.on('onMessage', (message) => {
-      console.log('front onMessage'),
-        this.messages.push(message),
-        socket.emit('message', {
-          msg: 'my new message',
-          content: message,
-        });
-      console.log("0weifji0ewr", message);
-    });
-  },
-
   methods: {
     async createRoom() {
       rooms.value.push({ name: this.boardName, players: 1, delete: false });
       await refreshRooms();
     },
 
-    JoinRoom(roomId) {
-      this.$cookies.set('player', 'player2', '1h');
-      this.$router.push({ name: 'Game', params: { roomId: roomId } });
-    },
-
     async newRoom() {
       try {
         console.log($cookies.get("playerId"))
-        const response = await axios.post(import.meta.env.VITE_BACK_HOST +  '/api/v1/Room/createRoom', {
+        const response = await axios.post(import.meta.env.VITE_BACK_HOST + '/api/v1/Room/createRoom', {
           roomName: this.boardName,
           startingColor: this.selectColor,
           isAvailable: true,
@@ -288,20 +258,6 @@ export default {
       } catch (error) {
         console.error("Couldn't get all available rooms", error);
       }
-
-      console.log('starting ')
-      const socket = io('http://localhost:8080');
-      console.log("test connect");
-      console.log(this);
-      const boardName = this.boardName;
-      const playerColor = this.selectColor;
-      console.log("color: ", playerColor);
-      console.log("baordname: ", boardName);
-      socket.emit('boardCreationData', {
-        msg: 'trying',
-        playerColor: playerColor,
-        boardName: boardName
-      });
     },
   }
 }
