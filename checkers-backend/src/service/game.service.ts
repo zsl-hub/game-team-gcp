@@ -1,9 +1,10 @@
 import { GameRepository } from "src/repository/game.repository"
-import { Game } from 'src/dto/game.dto'
+import { Game, GameResult } from 'src/dto/game.dto'
 import { Injectable } from "@nestjs/common";
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
-export class GameService {
+export class GameService{
     constructor(private readonly gameRepository: GameRepository) { }
 
     async findAll(): Promise<Game[]> {
@@ -24,5 +25,15 @@ export class GameService {
 
     async delete(id: string): Promise<string> {
         return await this.gameRepository.delete(id);
+    }
+
+    async join(body: Game, copy:Game): Promise<string> {
+        copy.gameEnded = false;
+        copy.gameId = uuidv4();
+        copy.player1Name = "Anonymous"
+        copy.player2Name = "Anonymous"
+        copy.gameResult= GameResult["Ongoing"];
+        await this.gameRepository.join(body, copy)
+        return "ok";
     }
 }

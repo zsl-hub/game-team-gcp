@@ -34,7 +34,7 @@
             <div class="Amount">Players: 1/2</div>
           </div>
           <div class="Right">
-            <Button label="Submit" id="Join" @click="JoinRoom(room.roomId)">JOIN</Button>
+            <Button label="Submit" id="Join" @click="JoinRoom(room.roomId,room.player1Id)">JOIN</Button>
           </div>
         </div>
       </div><br><br>
@@ -176,74 +176,64 @@ const options = ref(['Random', 'Red', 'Black']);
 const router = useRouter();
 let roomId = ref(null);
 
-async function JoinRoom() {
-  try {
-
-    const response = await axios.get('http://localhost:8080/api/v1/game/');
-    console.log('Response data:', response.data);
-
-    state.rooms = response.data;
-
-    if (response.data && Array.isArray(response.data)) {
-      response.data.forEach(room => {
-        let playerId;
-        if (player === 'player1') {
-          playerId = room.player1Id;
-        } else if (player === 'player2') {
-          playerId = room.player2Id;
-        }
-        console.log('Player ID:', playerId);
-        router.push(`Game/${room.roomId}&&${playerId}`);
-        store.roomId = room.roomId;
-        console.log(store.roomId);
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 onMounted(async () => {
-  console.log(uuidv4());
   if ($cookies.get("playerId") == null) {
-    this.$cookies.set('playerId', uuidv4(), "1h");
+    $cookies.set('playerId', uuidv4(), 60*5); // 5 min
   }
 
   const socket = io('http://localhost:8080');
 
-  socket.on('onMessage', (message) => {
+  socket.on('Connects', (message) => {
     state.messages.push(message);
-    socket.emit('message', {
-      msg: 'my new message',
+    socket.emit('Connects', {
       content: message,
     });
   });
   await refreshRooms();
 });
-</script>
 
+
+async function JoinRoom(roomId, player1Id) {
+  try {
+    const socket = io('http://localhost:8080');
+    
+    const response = await axios.post('http://localhost:8080/api/v1/game/join/', {
+      player1Id: player1Id,
+      player2Id: $cookies.get("playerId"),
+      roomId: roomId
+    });
+
+    window.location = `/Game/${roomId}`
+
+    console.log('Response data:', response.data);
+    state.rooms = response.data;
+
+  } catch (error) {
+    console.log(error);
+  }
+};
+</script>
 
 <script>
 import io from 'socket.io-client';
 
 const rooms = ref([]);
 
-let state = reactive({
-  boardName: '',
-  selectColor: '',
-  isCreatingRoom: false,
-});
-
 const refreshRooms = async () => {
   try {
     const response = await axios.get('http://localhost:8080/api/v1/getAllAvailableRooms/');
     state.rooms = response.data;
     const roomIds = state.rooms.map(room => room.roomId);
-    console.log(roomIds);
   } catch (error) {
     console.error("Couldn't refresh the room list", error);
   }
 };
+
+let state = reactive({
+  boardName: '',
+  selectColor: '',
+  isCreatingRoom: false,
+});
 
 export default {
   data() {
@@ -256,31 +246,13 @@ export default {
 
   async mounted() {
     refreshRooms()
-    // Connect to the Socket.IO server
-    const socket = io('http://localhost:8080'); // Change the URL to your backend URL
-    // Listen for messages from the server
-    console.log("before");
-    socket.on('onMessage', (message) => {
-      console.log('front onMessage'),
-        this.messages.push(message),
-        socket.emit('message', {
-          msg: 'my new message',
-          content: message,
-        });
-      console.log("0weifji0ewr", message);
-    });
+    const socket = io('http://localhost:8080');
   },
 
   methods: {
     async createRoom() {
-      console.log('testing this: ', this)
       rooms.value.push({ name: this.boardName, players: 1, delete: false });
       await refreshRooms();
-    },
-
-    JoinRoom(roomId) {
-      this.$cookies.set('player', 'player2', '1h');
-      this.$router.push({ name: 'Game', params: { roomId: roomId } });
     },
 
     async newRoom() {
@@ -292,26 +264,13 @@ export default {
           isAvailable: true,
           player1Id: this.$cookies.get("playerId")
         });
-        console.log(response);
+        console.log(response.data)
+        window.location = `/Game/${response.data.roomId}`
         state.isCreatingRoom = true;
         await refreshRooms();
       } catch (error) {
         console.error("Couldn't get all available rooms", error);
       }
-
-      console.log('starting ')
-      const socket = io('http://localhost:8080');
-      console.log("test connect");
-      console.log(this);
-      const boardName = this.boardName;
-      const playerColor = this.selectColor;
-      console.log("color: ", playerColor);
-      console.log("baordname: ", boardName);
-      socket.emit('boardCreationData', {
-        msg: 'trying',
-        playerColor: playerColor,
-        boardName: boardName
-      });
     },
   }
 }
