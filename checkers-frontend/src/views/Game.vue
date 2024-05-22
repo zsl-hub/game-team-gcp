@@ -8,16 +8,16 @@
     <div class="Board" id="Board"></div>
     <div class="Options">
       <div class="FirstPlayer">
-        <label for="username">1 Player: </label>
-        <InputText id="FirstUsername" v-model="value" />
+        <label for="username"> Update your username: </label>
+        <InputText id="FirstUsername" v-model="username" />
+        <Button label="Change username" @Click="UpdateUsername()"/>
       </div>
       <div class="Surrender">
         <Button class="SurrenderButton" aria-label="Submit" @click='surrender($route.params.roomId)'> 🏳️</Button>
       </div>
-      <div class="SecondPlayer">
+      <!-- <div class="SecondPlayer">
         <label for="username">2 Player: </label>
-        <InputText id="SecondUsername" v-model="value" />
-      </div>
+      </div> -->
     </div>
 
   </main>
@@ -240,6 +240,8 @@ onMounted(() => {
     const fromCol = parseInt(fromCell.dataset.col);
     const toCol = parseInt(toCell.dataset.col);
 
+
+
     const isKing = fromCell.firstChild.classList.contains('King');
 
     return isKing
@@ -369,6 +371,18 @@ export default {
   },
 
   methods: {
+    async UpdateUsername(){
+      const searchParams = new URLSearchParams(window.location.search);
+      const url = "http://localhost:5173/Game/9c825807-2c27-4eed-8634-3a8c4fee42d8";
+      const parts = url.split('/');
+      const lastPart = parts[parts.length - 1];
+      const response = await axios.put(import.meta.env.VITE_BACK_HOST +  '/api/v1/renameUser', {
+          roomId: lastPart,
+          userName: this.username,
+          userId: $cookies.get('playerId')
+        });
+    },
+
     async surrender() {
       console.log('Room ID:', store.roomId);
 
