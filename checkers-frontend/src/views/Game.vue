@@ -268,7 +268,7 @@ onMounted(() => {
     toCell.dataset.color = CurrentPlayer;
     GameState[toRow][toCol] = isKing ? (CurrentPlayer === 'black' ? 4 : 3) : (CurrentPlayer === 'black' ? 2 : 1);
 
-    const socket = io('http://localhost:8080');
+    const socket = io(import.meta.env.VITE_BACK_HOST);
     console.log("testing move");
     socket.emit('boardData', {
       msg: 'trying to send board',
@@ -373,7 +373,7 @@ export default {
       console.log('Room ID:', store.roomId);
 
       try {
-        await axios.delete(`http://localhost:8080/api/v1/game/${store.roomId}`);
+        await axios.delete(import.meta.env.VITE_BACK_HOST + `/api/v1/game/${store.roomId}`);
 
         setTimeout(() => {
           this.$router.push('/');

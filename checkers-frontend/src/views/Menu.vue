@@ -178,10 +178,10 @@ let roomId = ref(null);
 
 onMounted(async () => {
   if ($cookies.get("playerId") == null) {
-    $cookies.set('playerId', uuidv4(), 60*5); // 5 min
+    this.$cookies.set('playerId', uuidv4(), "1h");
   }
 
-  const socket = io('http://localhost:8080');
+  const socket = io(import.meta.env.VITE_BACK_HOST);
 
   socket.on('Connects', (message) => {
     state.messages.push(message);
@@ -221,7 +221,7 @@ const rooms = ref([]);
 
 const refreshRooms = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/api/v1/getAllAvailableRooms/');
+    const response = await axios.get(import.meta.env.VITE_BACK_HOST +  '/api/v1/getAllAvailableRooms/');
     state.rooms = response.data;
     const roomIds = state.rooms.map(room => room.roomId);
   } catch (error) {
@@ -246,7 +246,19 @@ export default {
 
   async mounted() {
     refreshRooms()
-    const socket = io('http://localhost:8080');
+    // Connect to the Socket.IO server
+    const socket = io('http://localhost:8080'); // Change the URL to your backend URL
+    // Listen for messages from the server
+    console.log("before");
+    socket.on('onMessage', (message) => {
+      console.log('front onMessage'),
+        this.messages.push(message),
+        socket.emit('message', {
+          msg: 'my new message',
+          content: message,
+        });
+      console.log("0weifji0ewr", message);
+    });
   },
 
   methods: {
@@ -255,14 +267,19 @@ export default {
       await refreshRooms();
     },
 
+    JoinRoom(roomId) {
+      this.$cookies.set('player', 'player2', '1h');
+      this.$router.push({ name: 'Game', params: { roomId: roomId } });
+    },
+
     async newRoom() {
       try {
         console.log($cookies.get("playerId"))
-        const response = await axios.post('http://localhost:8080/api/v1/Room/createRoom', {
+        const response = await axios.post(import.meta.env.VITE_BACK_HOST +  '/api/v1/Room/createRoom', {
           roomName: this.boardName,
           startingColor: this.selectColor,
           isAvailable: true,
-          player1Id: this.$cookies.get("playerId")
+          player1Id: $cookies.get("playerId")
         });
         console.log(response.data)
         window.location = `/Game/${response.data.roomId}`
@@ -271,6 +288,20 @@ export default {
       } catch (error) {
         console.error("Couldn't get all available rooms", error);
       }
+
+      console.log('starting ')
+      const socket = io('http://localhost:8080');
+      console.log("test connect");
+      console.log(this);
+      const boardName = this.boardName;
+      const playerColor = this.selectColor;
+      console.log("color: ", playerColor);
+      console.log("baordname: ", boardName);
+      socket.emit('boardCreationData', {
+        msg: 'trying',
+        playerColor: playerColor,
+        boardName: boardName
+      });
     },
   }
 }
