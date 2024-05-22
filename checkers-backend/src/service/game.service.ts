@@ -11,6 +11,10 @@ export class GameService{
         return await this.gameRepository.findAll();
     }
 
+    async findOneName( id: string): Promise<Object> {
+        return await this.gameRepository.findOneName(id);
+    }
+
     async findOne(id: string): Promise<Game> {
         return await this.gameRepository.findOne(id);
     }

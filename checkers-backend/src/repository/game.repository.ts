@@ -11,6 +11,12 @@ export class GameRepository {
         return game;
     }
 
+    async findOneName( id: string): Promise<Object> {
+        const query = this.datastore.createQuery("game").filter(new PropertyFilter(("roomId"), "=", id))
+        const [game, queryInfo] = await query.run();
+        return game[0];
+    }
+
     async findOne(id: string): Promise<Game> {
         const query = this.datastore.createQuery("game").filter(new PropertyFilter(("gameId"), "=", id))
         const [game, queryInfo] = await query.run();

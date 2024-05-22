@@ -15,7 +15,7 @@ export class OtherRoutesRepository {
     }
 
     async renameUser(@Body() body: User): Promise<number> {
-        const query = this.datastore.createQuery("game").filter(new PropertyFilter("roomId", "=", body.roomId));
+        const query = this.datastore.createQuery("room").filter(new PropertyFilter("roomId", "=", body.roomId));
         const [game, queryInfo] = await query.run();
         if (game[0].player1Id) {
             game[0].player1Name = body.userName

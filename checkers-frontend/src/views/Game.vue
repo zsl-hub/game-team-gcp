@@ -373,14 +373,17 @@ export default {
   methods: {
     async UpdateUsername(){
       const searchParams = new URLSearchParams(window.location.search);
-      const url = "http://localhost:5173/Game/9c825807-2c27-4eed-8634-3a8c4fee42d8";
+      const url = window.location.pathname;
       const parts = url.split('/');
       const lastPart = parts[parts.length - 1];
+      console.log($cookies.get('playerId'));
       const response = await axios.put(import.meta.env.VITE_BACK_HOST +  '/api/v1/renameUser', {
           roomId: lastPart,
           userName: this.username,
           userId: $cookies.get('playerId')
         });
+      const name = await axios.get(import.meta.env.VITE_BACK_HOST + `/api/v1/Game/getName/${lastPart}`);
+      console.log(name)
     },
 
     async surrender() {
