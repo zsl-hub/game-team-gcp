@@ -201,7 +201,8 @@ onMounted(() => {
           CheckForPromotion(ClickedCell);
           SwitchPlayer();
         }
-      } else if (IsCaptureAllowed(SelectedCell, ClickedCell)) {
+      } 
+      else if (IsCaptureAllowed(SelectedCell, ClickedCell)) {
         CapturePiece(SelectedCell, ClickedCell);
         CheckForPromotion(ClickedCell);
 
@@ -212,10 +213,12 @@ onMounted(() => {
           MultiCapture = false;
           SwitchPlayer();
         }
-      } else if (!MultiCapture && ClickedCell.dataset.color === CurrentPlayer) {
+      } 
+      else if (!MultiCapture && ClickedCell.dataset.color === CurrentPlayer) {
         SelectPiece(ClickedCell);
       }
-    } else if (ClickedCell.dataset.color === CurrentPlayer) {
+    } 
+    else if (ClickedCell.dataset.color === CurrentPlayer) {
       SelectPiece(ClickedCell);
     }
   }
@@ -298,8 +301,8 @@ onMounted(() => {
       if (!isKing && direction !== (toRow - fromRow) / Math.abs(toRow - fromRow)) {
         return false;
       }
-
-      return GameState[capturedRow][capturedCol] !== 0 && GameState[capturedRow][capturedCol] !== (CurrentPlayer === 'red' ? 1 : 2) && GameState[toRow][toCol] === 0;
+      const opponentPiece = CurrentPlayer === 'red' ? [2, 4] : [1, 3];
+      return opponentPiece.includes(GameState[capturedRow][capturedCol]) && GameState[toRow][toCol] === 0;
     }
     return false;
   }
