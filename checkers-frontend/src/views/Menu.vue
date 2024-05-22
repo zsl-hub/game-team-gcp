@@ -170,6 +170,7 @@ import axios from 'axios';
 import { reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { store } from './store.js';
+import uuid from "uuid";
 
 const options = ref(['Random', 'Red', 'Black']);
 const router = useRouter();
@@ -206,6 +207,7 @@ async function JoinRoom() {
 };
 
 onMounted(async () => {
+  const id = uuid();
   const socket = io('http://localhost:8080');
 
   socket.on('onMessage', (message) => {
