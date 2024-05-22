@@ -194,12 +194,12 @@ async function JoinRoom(roomId, player1Id) {
       player2Id: $cookies.get("playerId"),
       roomId: roomId
     });
+    store.roomId = roomId;
 
     window.location = `/Game/${roomId}`
 
     console.log('Response data:', response.data);
     state.rooms = response.data;
-
   } catch (error) {
     console.log(error);
   }

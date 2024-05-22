@@ -12,7 +12,7 @@
         <InputText id="FirstUsername" v-model="value" />
       </div>
       <div class="Surrender">
-        <Button class="SurrenderButton" aria-label="Submit" @click='surrender($route.params.roomId)'> 🏳️</Button>
+        <Button class="SurrenderButton" aria-label="Submit" @click='surrender()'> 🏳️</Button>
       </div>
       <div class="SecondPlayer">
         <label for="username">2 Player: </label>
@@ -146,8 +146,17 @@ onMounted(() => {
 
   let CurrentPlayer = 'red';
   let SelectedCell = null;
-  let GameState = Array(8).fill().map(() => Array(8).fill(0));
-  let MultiCapture = false;
+  let GameState = {
+    'A': Array(8).fill(0),
+    'B': Array(8).fill(0),
+    'C': Array(8).fill(0),
+    'D': Array(8).fill(0),
+    'E': Array(8).fill(0),
+    'F': Array(8).fill(0),
+    'G': Array(8).fill(0),
+    'H': Array(8).fill(0)
+  };
+  const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']; let MultiCapture = false;
 
   InitializeBoard();
 
@@ -166,12 +175,12 @@ onMounted(() => {
             cell.classList.add("Occupied");
             cell.dataset.color = 'black';
             cell.appendChild(CreatePiece('Black'));
-            GameState[row][col] = 2;
+            GameState[letters[row]][col] = 2;
           } else if (row > 4) {
             cell.classList.add("Occupied");
             cell.dataset.color = 'red';
             cell.appendChild(CreatePiece('Red'));
-            GameState[row][col] = 1;
+            GameState[letters[row]][col] = 1;
           }
         }
 
@@ -243,8 +252,8 @@ onMounted(() => {
     const isKing = fromCell.firstChild.classList.contains('King');
 
     return isKing
-      ? Math.abs(fromRow - toRow) === 1 && Math.abs(fromCol - toCol) === 1 && GameState[toRow][toCol] === 0
-      : fromRow + direction === toRow && Math.abs(fromCol - toCol) === 1 && GameState[toRow][toCol] === 0;
+      ? Math.abs(fromRow - toRow) === 1 && Math.abs(fromCol - toCol) === 1 && GameState[letters[toRow]][toCol] === 0
+      : fromRow + direction === toRow && Math.abs(fromCol - toCol) === 1 && GameState[letters[toRow]][toCol] === 0;
   }
 
   function MovePiece(fromCell, toCell) {
@@ -258,7 +267,7 @@ onMounted(() => {
     fromCell.innerHTML = '';
     fromCell.classList.remove('Occupied');
     fromCell.dataset.color = '';
-    GameState[fromRow][fromCol] = 0;
+    GameState[letters[fromRow]][fromCol] = 0;
 
     const newPiece = CreatePiece(CurrentPlayer.charAt(0).toUpperCase() + CurrentPlayer.slice(1));
 
@@ -266,7 +275,7 @@ onMounted(() => {
     toCell.appendChild(newPiece);
     toCell.classList.add('Occupied');
     toCell.dataset.color = CurrentPlayer;
-    GameState[toRow][toCol] = isKing ? (CurrentPlayer === 'black' ? 4 : 3) : (CurrentPlayer === 'black' ? 2 : 1);
+    GameState[[toRow]][toCol] = isKing ? (CurrentPlayer === 'black' ? 4 : 3) : (CurrentPlayer === 'black' ? 2 : 1);
 
     const socket = io(import.meta.env.VITE_BACK_HOST);
     console.log("testing move");
@@ -299,7 +308,7 @@ onMounted(() => {
         return false;
       }
 
-      return GameState[capturedRow][capturedCol] !== 0 && GameState[capturedRow][capturedCol] !== (CurrentPlayer === 'red' ? 1 : 2) && GameState[toRow][toCol] === 0;
+      return GameState[letters[capturedRow]][capturedCol] !== 0 && GameState[letters[capturedRow]][capturedCol] !== (CurrentPlayer === 'red' ? 1 : 2) && GameState[letters[toRow]][toCol] === 0;
     }
     return false;
   }
@@ -311,7 +320,7 @@ onMounted(() => {
     capturedCell.innerHTML = '';
     capturedCell.classList.remove('Occupied');
     capturedCell.dataset.color = '';
-    GameState[capturedRow][capturedCol] = 0;
+    GameState[letters[capturedRow]][capturedCol] = 0;
 
     MovePiece(fromCell, toCell);
   }
@@ -320,7 +329,7 @@ onMounted(() => {
     const row = parseInt(cell.dataset.row);
     if ((CurrentPlayer === 'red' && row === 0) || (CurrentPlayer === 'black' && row === 7)) {
       cell.firstChild.classList.add('King');
-      GameState[row][parseInt(cell.dataset.col)] = CurrentPlayer === 'black' ? 4 : 3;
+      GameState[letters[row]][parseInt(cell.dataset.col)] = CurrentPlayer === 'black' ? 4 : 3;
     }
   }
 
@@ -359,7 +368,6 @@ onMounted(() => {
 
 <script>
 import axios from 'axios';
-import { store } from './store.js';
 
 export default {
   data() {
@@ -370,14 +378,14 @@ export default {
 
   methods: {
     async surrender() {
-      console.log('Room ID:', store.roomId);
+      const roomId = this.$route.params.id;
+      console.log('Room ID:', roomId);
 
       try {
-        await axios.delete(import.meta.env.VITE_BACK_HOST + `/api/v1/game/${store.roomId}`);
-
+        await axios.delete(import.meta.env.VITE_BACK_HOST + `/api/v1/Game/${roomId}`);
         setTimeout(() => {
           this.$router.push('/');
-        }, 7000);
+        }, 3000);
       } catch (error) {
         console.error(error);
       }
