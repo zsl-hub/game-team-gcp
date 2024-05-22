@@ -280,7 +280,6 @@ export default {
       this.$router.push({ name: 'Game', params: { roomId: roomId } });
     },
 
-  
     async newRoom() {
       try {
         const response = await axios.post('http://localhost:8080/api/v1/Room/', {
