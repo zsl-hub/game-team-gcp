@@ -12,7 +12,6 @@ export class Room {
     user2Id: string;
     isAvailable: boolean;
     userId: string;
-    user2Id: string;
     isAvailable: boolean;
     @IsNotEmpty()
     roomName: string;
