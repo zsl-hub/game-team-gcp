@@ -1,5 +1,6 @@
-import { IsNotEmpty } from 'class-validator';
+import { isNotEmpty, IsNotEmpty } from 'class-validator';
 
+export enum Colors {
 export enum Colors {
     Red = "Red",
     Black = "Black",
@@ -8,6 +9,8 @@ export enum Colors {
 
 export class Room {
     roomId: string;
+    user2Id: string;
+    isAvailable: boolean;
     userId: string;
     user2Id: string;
     isAvailable: boolean;
