@@ -280,26 +280,6 @@ export default {
       this.$router.push({ name: 'Game', params: { roomId: roomId } });
     },
 
-    async createRoom() {
-      try {
-        const response = await axios.post('http://localhost:8080/api/v1/Room/', {
-          roomName: this.boardName,
-          startingColor: this.selectColor,
-          isAvailable: 1,
-        });
-
-        const player1Id = response.data.player1Id;
-        this.$cookies.set('player', 'player1', '1h');
-        this.$router.push({ name: 'Game', params: { roomId: response.data.roomId, playerId: player1Id } });
-        await refreshRooms();
-        state.isCreatingRoom = true;
-      } catch (error) {
-        console.error("Couldn't create room", error);
-      }
-      console.log('testing this: ', this)
-      rooms.value.push({ name: this.boardName, players: 1, delete: false });
-    },
-
     async newRoom() {
       try {
         const response = await axios.post('http://localhost:8080/api/v1/Room/', {
