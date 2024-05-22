@@ -34,6 +34,6 @@ export class RoomService {
         body.player2Id = null;
         if (body.startingColor == "Random"){body.startingColor = Colors[(["Red","Black"])[Math.floor(Math.random()*([1,2]).length)]]}
         const response = await this.RoomRepository.createRoom(body);
-        return response;
+        return body;
     }
 }

@@ -8,8 +8,9 @@ export enum Colors {
 
 export class Room {
     roomId: string;
-    player2Id: string;
     isAvailable: boolean;
+    player2Id: string;
+    userId: string;
     @IsNotEmpty()
     roomName: string;
     @IsNotEmpty()

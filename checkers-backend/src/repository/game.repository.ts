@@ -19,9 +19,6 @@ export class GameRepository {
 
     async add(body: Game): Promise<string> {
         body.gameId = uuidv4();
-        body.player1Id = uuidv4();
-        body.player2Id = uuidv4();
-        if (body.player1Color == "Random"){body.player1Color = (["Red","Black"])[Math.floor(Math.random()*([1,2]).length)]}
         const taskKey = this.datastore.key('game');
         const entity = {
             key: taskKey,
@@ -45,9 +42,31 @@ export class GameRepository {
     }
 
     async delete(id: string): Promise<string> {
-        const query = this.datastore.createQuery("game").filter(new PropertyFilter("roomId", "=", id));
+        const query = this.datastore.createQuery("game").filter(new PropertyFilter("gameId", "=", id));
         const [game, queryInfo] = await query.run();
         await this.datastore.delete(game[0][this.datastore.KEY]);
+        return "Success";
+    }
+
+    async join(body: Game, copy: Game): Promise<string> {
+        const query = this.datastore.createQuery("room").filter(new PropertyFilter("roomId", "=", body.roomId));
+        const [room, queryInfo] = await query.run();
+        room[0].player2Id = body.player2Id;
+        room[0].isAvailable = false;
+        const taskKeyUpdate = room[0][this.datastore.KEY];
+        const entityUpdate = {
+            key: taskKeyUpdate,
+            data: room[0],
+        };
+        await this.datastore.update(entityUpdate);
+
+        body.gameId = uuidv4();
+        const taskKeyAdd = this.datastore.key('game');
+        const entityAdd = {
+            key: taskKeyAdd,
+            data: copy,
+        };
+        await this.datastore.save(entityAdd);
         return "Success";
     }
 }
