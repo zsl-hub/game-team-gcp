@@ -47,4 +47,15 @@ export class RoomRepository {
         await this.datastore.delete(rooms[0][this.datastore.KEY]);
         return "Success";
     }
+
+    async createRoom(body: Room): Promise<Room> {
+        const taskKey = this.datastore.key('room');
+        const entity = {
+            key: taskKey,
+            data: body,
+        };
+        
+        await this.datastore.save(entity);
+        return body;
+    }
 }

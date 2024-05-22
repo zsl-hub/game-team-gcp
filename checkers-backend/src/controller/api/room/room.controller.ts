@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, InternalServerErrorException, Param, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, InternalServerErrorException, Param, Post, Put } from '@nestjs/common';
 import { RoomService } from 'src/service/room.service';
 import { Room } from 'src/dto/room.dto';
 
@@ -38,6 +38,13 @@ export class RoomController {
     async delete(@Param('id') id: string): Promise<string> {
         const response = await this.roomService.delete(id)
         if(response != "Success"){throw new InternalServerErrorException("Error occured");}
+        return response;
+    }
+
+    @Post("/createRoom")
+    async createRoom(@Body() body: Room): Promise<Room>{
+        const response = await this.roomService.createRoom(body);
+        if (!response){throw new BadRequestException(response);}
         return response;
     }
 }
