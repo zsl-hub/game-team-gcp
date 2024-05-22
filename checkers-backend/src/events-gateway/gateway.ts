@@ -4,9 +4,6 @@ import {Server} from 'socket.io';
 
 @WebSocketGateway({ 
     cors: true
-    // {
-    //     origin: 'http://localhost:5173'
-    // }
 })
 export class MyGateway implements OnModuleInit{
     @WebSocketServer()

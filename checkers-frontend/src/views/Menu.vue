@@ -179,7 +179,7 @@ let roomId = ref(null);
 async function JoinRoom() {
   try {
 
-    const response = await axios.get('http://localhost:8080/api/v1/game/');
+    const response = await axios.get(import.meta.env.VITE_BACK_HOST +  '/api/v1/game/');
     console.log('Response data:', response.data);
 
     state.rooms = response.data;
@@ -209,7 +209,7 @@ onMounted(async () => {
     this.$cookies.set('playerId', uuidv4(), "1h");
   }
 
-  const socket = io('http://localhost:8080');
+  const socket = io(import.meta.env.VITE_BACK_HOST);
 
   socket.on('onMessage', (message) => {
     state.messages.push(message);
@@ -236,7 +236,7 @@ let state = reactive({
 
 const refreshRooms = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/api/v1/getAllAvailableRooms/');
+    const response = await axios.get(import.meta.env.VITE_BACK_HOST +  '/api/v1/getAllAvailableRooms/');
     state.rooms = response.data;
     const roomIds = state.rooms.map(room => room.roomId);
     console.log(roomIds);
@@ -257,9 +257,9 @@ export default {
   async mounted() {
     refreshRooms()
     // Connect to the Socket.IO server
-    const socket = io('http://localhost:8080'); // Change the URL to your backend URL
+    const socket = io(import.meta.env.VITE_BACK_HOST); // Change the URL to your backend URL
     // Listen for messages from the server
-    console.log("before");
+    console.log("before", import.meta.env.VITE_BACK_HOST);
     socket.on('onMessage', (message) => {
       console.log('front onMessage'),
         this.messages.push(message),
@@ -286,7 +286,7 @@ export default {
     async newRoom() {
       try {
         console.log($cookies.get("playerId"))
-        const response = await axios.post('http://localhost:8080/api/v1/Room/createRoom', {
+        const response = await axios.post(import.meta.env.VITE_BACK_HOST +  '/api/v1/Room/createRoom', {
           roomName: this.boardName,
           startingColor: this.selectColor,
           isAvailable: true,
@@ -300,7 +300,7 @@ export default {
       }
 
       console.log('starting ')
-      const socket = io('http://localhost:8080');
+      const socket = io(import.meta.env.VITE_BACK_HOST);
       console.log("test connect");
       console.log(this);
       const boardName = this.boardName;
