@@ -206,7 +206,7 @@ async function JoinRoom() {
 onMounted(async () => {
   console.log(uuidv4());
   if ($cookies.get("playerId") == null) {
-    this.$cookies.set('playerId', uuidv4(), "1h");
+    $cookies.set('playerId', uuidv4(), "1h");
   }
 
   const socket = io(import.meta.env.VITE_BACK_HOST);
@@ -279,7 +279,7 @@ export default {
     },
 
     JoinRoom(roomId) {
-      this.$cookies.set('player', 'player2', '1h');
+      $cookies.set('player', 'player2', '1h');
       this.$router.push({ name: 'Game', params: { roomId: roomId } });
     },
 
@@ -290,7 +290,7 @@ export default {
           roomName: this.boardName,
           startingColor: this.selectColor,
           isAvailable: true,
-          player1Id: this.$cookies.get("playerId")
+          player1Id: $cookies.get("playerId")
         });
         console.log(response);
         state.isCreatingRoom = true;
