@@ -275,7 +275,7 @@ onMounted(() => {
     toCell.appendChild(newPiece);
     toCell.classList.add('Occupied');
     toCell.dataset.color = CurrentPlayer;
-    GameState[[toRow]][toCol] = isKing ? (CurrentPlayer === 'black' ? 4 : 3) : (CurrentPlayer === 'black' ? 2 : 1);
+    GameState[letters[toRow]][toCol] = isKing ? (CurrentPlayer === 'black' ? 4 : 3) : (CurrentPlayer === 'black' ? 2 : 1);
 
     const socket = io(import.meta.env.VITE_BACK_HOST);
     console.log("testing move");
@@ -342,7 +342,7 @@ onMounted(() => {
     ];
 
     const isKing = cell.firstChild.classList.contains('King');
-    const playerPiece = GameState[row][col];
+    const playerPiece = GameState[letters[row]][col];
 
     for (const [dx, dy] of directions) {
       const newRow = row + dx;
@@ -351,9 +351,9 @@ onMounted(() => {
         const midRow = (row + newRow) / 2;
         const midCol = (col + newCol) / 2;
         if (
-          GameState[newRow][newCol] === 0 &&
-          GameState[midRow][midCol] !== 0 &&
-          GameState[midRow][midCol] !== playerPiece &&
+          GameState[letters[newRow]][newCol] === 0 &&
+          GameState[letters[midRow]][midCol] !== 0 &&
+          GameState[letters[midRow]][midCol] !== playerPiece &&
           (isKing || (CurrentPlayer === 'red' ? dx < 0 : dx > 0))
         ) {
           return true;
