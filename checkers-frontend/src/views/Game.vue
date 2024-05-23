@@ -132,6 +132,10 @@ main {
 .King {
   border: 5px solid gold;
 }
+
+.PossibleMove {
+  border: 5px solid red;
+}
 </style>
 
 
@@ -204,29 +208,48 @@ onMounted(() => {
     const ClickedCell = this;
 
     if (SelectedCell) {
-      if (IsMoveAllowed(SelectedCell, ClickedCell)) {
-        if (!MultiCapture) {
-          MovePiece(SelectedCell, ClickedCell);
-          CheckForPromotion(ClickedCell);
-          SwitchPlayer();
-        }
-      } else if (IsCaptureAllowed(SelectedCell, ClickedCell)) {
-        CapturePiece(SelectedCell, ClickedCell);
-        CheckForPromotion(ClickedCell);
-
-        if (IsAnotherCapturePossible(ClickedCell)) {
-          SelectPiece(ClickedCell);
-          MultiCapture = true;
-        } else {
-          MultiCapture = false;
-          SwitchPlayer();
-        }
-      } else if (!MultiCapture && ClickedCell.dataset.color === CurrentPlayer) {
-        SelectPiece(ClickedCell);
-      }
-    } else if (ClickedCell.dataset.color === CurrentPlayer) {
+      HandleSelectedCell(ClickedCell);
+    }
+    else if (ClickedCell.dataset.color === CurrentPlayer) {
       SelectPiece(ClickedCell);
     }
+  }
+
+  function HandleSelectedCell(ClickedCell) {
+    if (IsCaptureAllowed(SelectedCell, ClickedCell)) {
+      CaptureAndCheckForPromotion(ClickedCell);
+      return;
+    }
+
+    if (!MultiCapture && IsMoveAllowed(SelectedCell, ClickedCell)) {
+      MovePieceAndCheckForPromotion(ClickedCell);
+      return;
+    }
+
+    if (!MultiCapture && ClickedCell.dataset.color === CurrentPlayer) {
+      SelectPiece(ClickedCell);
+    }
+  }
+
+  function CaptureAndCheckForPromotion(ClickedCell) {
+    CapturePiece(SelectedCell, ClickedCell);
+    CheckForPromotion(ClickedCell);
+
+    if (IsAnotherCapturePossible(ClickedCell)) {
+      SelectPiece(ClickedCell);
+      MultiCapture = true;
+      HighlightPossibleMoves(ClickedCell);
+    }
+    else {
+      MultiCapture = false;
+      SwitchPlayer();
+    }
+  }
+
+  function MovePieceAndCheckForPromotion(ClickedCell) {
+    MovePiece(SelectedCell, ClickedCell);
+    CheckForPromotion(ClickedCell);
+    SwitchPlayer();
   }
 
   function UnSelectPiece() {
@@ -234,12 +257,14 @@ onMounted(() => {
       SelectedCell.classList.remove("Selected");
       SelectedCell = null;
     }
+    ClearHighlightedMoves();
   }
 
   function SelectPiece(cell) {
     UnSelectPiece();
     cell.classList.add("Selected");
     SelectedCell = cell;
+    HighlightPossibleMoves(cell);
   }
 
   function IsMoveAllowed(fromCell, toCell) {
@@ -285,10 +310,13 @@ onMounted(() => {
     });
 
     UnSelectPiece();
+    ClearHighlightedMoves();
   }
 
   function SwitchPlayer() {
-    CurrentPlayer = CurrentPlayer === 'red' ? 'black' : 'red';
+    if (!MultiCapture) {
+      CurrentPlayer = CurrentPlayer === 'red' ? 'black' : 'red';
+    }
   }
 
   function IsCaptureAllowed(fromCell, toCell) {
@@ -350,10 +378,12 @@ onMounted(() => {
       if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
         const midRow = (row + newRow) / 2;
         const midCol = (col + newCol) / 2;
+        const targetCellColor = GameState[letters[midRow]][midCol];
         if (
           GameState[letters[newRow]][newCol] === 0 &&
-          GameState[letters[midRow]][midCol] !== 0 &&
-          GameState[letters[midRow]][midCol] !== playerPiece &&
+          targetCellColor !== 0 &&
+          targetCellColor !== (CurrentPlayer === 'red' ? 1 : 2) &&
+          targetCellColor !== (CurrentPlayer === 'red' ? 3 : 4) &&
           (isKing || (CurrentPlayer === 'red' ? dx < 0 : dx > 0))
         ) {
           return true;
@@ -361,6 +391,65 @@ onMounted(() => {
       }
     }
     return false;
+  }
+
+  function HighlightPossibleMoves(cell) {
+    const row = parseInt(cell.dataset.row);
+    const col = parseInt(cell.dataset.col);
+
+    if (MultiCapture) {
+      const captureDirections = [[2, 2], [2, -2], [-2, 2], [-2, -2]];
+      captureDirections.forEach(([dx, dy]) => {
+        const newRow = row + dx;
+        const newCol = col + dy;
+        if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+          const targetCell = document.querySelector(`[data-row='${newRow}'][data-col='${newCol}']`);
+          if (targetCell && IsCaptureAllowed(cell, targetCell)) {
+            targetCell.classList.add('PossibleMove');
+          }
+        }
+      });
+    }
+
+    else {
+      const directions = CurrentPlayer === 'red' ? [[-1, -1], [-1, 1]] : [[1, -1], [1, 1]];
+
+      const isKing = cell.firstChild.classList.contains('King');
+      if (isKing) {
+        directions.push([1, -1], [1, 1], [-1, -1], [-1, 1]);
+      }
+
+      directions.forEach(([dx, dy]) => {
+        const newRow = row + dx;
+        const newCol = col + dy;
+
+        if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+          const targetCell = document.querySelector(`[data-row='${newRow}'][data-col='${newCol}']`);
+          if (targetCell && IsMoveAllowed(cell, targetCell)) {
+            targetCell.classList.add('PossibleMove');
+          }
+        }
+      });
+
+      const captureDirections = [[2, 2], [2, -2], [-2, 2], [-2, -2]];
+      captureDirections.forEach(([dx, dy]) => {
+        const newRow = row + dx;
+        const newCol = col + dy;
+        if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+          const targetCell = document.querySelector(`[data-row='${newRow}'][data-col='${newCol}']`);
+          if (targetCell && IsCaptureAllowed(cell, targetCell)) {
+            targetCell.classList.add('PossibleMove');
+          }
+        }
+      });
+    }
+  }
+
+  function ClearHighlightedMoves() {
+    const possibleMoves = document.querySelectorAll('.PossibleMove');
+    possibleMoves.forEach(cell => {
+      cell.classList.remove('PossibleMove');
+    });
   }
 });
 
