@@ -16,7 +16,6 @@ export class GameController {
         return await this.gameService.findOne(id);
     }
 
-
     @Post()
     async add(@Body() body: Game): Promise<string> {
         return await this.gameService.add(body);
@@ -33,8 +32,8 @@ export class GameController {
     }
 
     @Post("/join")
-    async join(@Body() body: Game)
-    {
+    async join(@Body() body: Game) {
         return this.gameService.join(body, body);
     }
+
 }

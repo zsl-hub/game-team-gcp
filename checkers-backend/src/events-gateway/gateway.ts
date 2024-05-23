@@ -9,12 +9,12 @@ export class MyGateway implements OnModuleInit {
     @WebSocketServer()
     server: Server
 
-    onModuleInit() {}
+    onModuleInit() { }
 
-    @SubscribeMessage('*')
+    @SubscribeMessage('Moves')
     onNewMessage(@MessageBody() body) {
-        this.server.emit('*', {
-            msg: 'New Message',
+        this.server.emit('Moves', {
+            msg: `Move was made`,
             content: body,
         });
     }

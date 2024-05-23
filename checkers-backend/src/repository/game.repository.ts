@@ -60,13 +60,39 @@ export class GameRepository {
         };
         await this.datastore.update(entityUpdate);
 
-        body.gameId = uuidv4();
         const taskKeyAdd = this.datastore.key('game');
         const entityAdd = {
             key: taskKeyAdd,
             data: copy,
         };
         await this.datastore.save(entityAdd);
+
+        const basicBoard = {
+            "H": [2, 0, 2, 0, 2, 0, 2, 0],
+            "G": [0, 2, 0, 2, 0, 2, 0, 2],
+            "F": [2, 0, 2, 0, 2, 0, 2, 0],
+            "E": [0, 0, 0, 0, 0, 0, 0, 0],
+            "D": [0, 0, 0, 0, 0, 0, 0, 0],
+            "C": [0, 1, 0, 1, 0, 1, 0, 1],
+            "B": [1, 0, 1, 0, 1, 0, 1, 0],
+            "A": [0, 1, 0, 1, 0, 1, 0, 1]
+        };
+
+        const gameMoveId = uuidv4();
+
+        const gameMoveData = {
+            gameMoveId: gameMoveId,
+            gameId: copy.gameId,
+            current: basicBoard
+        }
+
+        const taskKeyAdd2 = this.datastore.key('gameMove');
+        const entityAdd2 = {
+            key: taskKeyAdd2,
+            data: gameMoveData,
+        };
+        await this.datastore.save(entityAdd2);
+
         return "Success";
     }
 }

@@ -139,7 +139,7 @@ describe("Game", () => {
                     "B": [1, 0, 1, 0, 1, 0, 1, 0],
                     "A": [0, 1, 0, 1, 0, 1, 0, 1]
                 },
-                gameId: "someid",
+                roomId: "someid",
                 gameMoveId: "someid",
                 move: "22:18",
                 playerId: "someid"
@@ -162,7 +162,7 @@ describe("Game", () => {
                     "B": [1, 0, 1, 0, 1, 0, 1, 0],
                     "A": [0, 1, 0, 1, 0, 1, 0, 1]
                 },
-                gameId: "someid",
+                roomId: "someid",
                 gameMoveId: "someid",
                 move: "9:14",
                 playerId: "someid"
@@ -185,7 +185,7 @@ describe("Game", () => {
                     "G": [0, 4, 0, 0, 0, 0, 0, 0],
                     "H": [3, 0, 0, 0, 0, 0, 0, 0]
                 },
-                gameId: "someid",
+                roomId: "someid",
                 gameMoveId: "someid",
                 move: "29:22",
                 playerId: "someid"
@@ -208,7 +208,7 @@ describe("Game", () => {
                     "G": [0, 3, 0, 0, 0, 0, 0, 0],
                     "H": [4, 0, 0, 0, 0, 0, 0, 0]
                 },
-                gameId: "someid",
+                roomId: "someid",
                 gameMoveId: "someid",
                 move: "29:22",
                 playerId: "someid"
@@ -231,7 +231,7 @@ describe("Game", () => {
                     "G": [0, 3, 0, 0, 0, 0, 0, 0],
                     "H": [4, 0, 0, 0, 0, 0, 0, 0]
                 },
-                gameId: "someid",
+                roomId: "someid",
                 gameMoveId: "someid",
                 move: "4:11",
                 playerId: "someid"
@@ -254,7 +254,7 @@ describe("Game", () => {
                     "G": [0, 3, 0, 0, 0, 3, 0, 3],
                     "H": [4, 0, 0, 0, 0, 0, 4, 0]
                 },
-                gameId: "someid",
+                roomId: "someid",
                 gameMoveId: "someid",
                 move: "32:23",
                 playerId: "someid"
@@ -277,7 +277,7 @@ describe("Game", () => {
                     "G": [0, 3, 0, 0, 0, 3, 0, 3],
                     "H": [4, 0, 0, 0, 0, 0, 4, 0]
                 },
-                gameId: "someid",
+                roomId: "someid",
                 gameMoveId: "someid",
                 move: "28:19",
                 playerId: "someid"
@@ -300,7 +300,7 @@ describe("Game", () => {
                     "G": [0, 3, 0, 0, 0, 3, 0, 3],
                     "H": [4, 0, 0, 0, 0, 0, 4, 0]
                 },
-                gameId: "someid",
+                roomId: "someid",
                 gameMoveId: "someid",
                 move: "1:10",
                 playerId: "someid"
@@ -323,7 +323,7 @@ describe("Game", () => {
                     "G": [0, 3, 0, 0, 0, 3, 0, 3],
                     "H": [4, 0, 0, 0, 0, 0, 4, 0]
                 },
-                gameId: "someid",
+                roomId: "someid",
                 gameMoveId: "someid",
                 move: "5:14",
                 playerId: "someid"
@@ -346,7 +346,7 @@ describe("Game", () => {
                     "G": [0, 3, 0, 0, 0, 3, 0, 3],
                     "H": [4, 0, 0, 0, 0, 0, 4, 0]
                 },
-                gameId: "someid",
+                roomId: "someid",
                 gameMoveId: "someid",
                 move: "14:5",
                 playerId: "someid"
@@ -369,7 +369,7 @@ describe("Game", () => {
                     "G": [0, 0, 0, 0, 0, 0, 0, 0],
                     "H": [4, 0, 0, 0, 0, 0, 0, 0]
                 },
-                gameId: "someid",
+                roomId: "someid",
                 gameMoveId: "someid",
                 move: "",
                 playerId: "someid"
@@ -392,7 +392,7 @@ describe("Game", () => {
                     "G": [0, 0, 0, 0, 0, 0, 0, 0],
                     "H": [3, 0, 0, 0, 0, 0, 0, 0]
                 },
-                gameId: "someid",
+                roomId: "someid",
                 gameMoveId: "someid",
                 move: "",
                 playerId: "someid"

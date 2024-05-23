@@ -33,7 +33,11 @@ export class OtherRoutesRepository {
     }
 
     async makeMove(@Body() body: PositionMove): Promise<string> {
-        const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter("gameId", "=", body.gameId));
+        const queryTakingId = this.datastore.createQuery("game").filter(new PropertyFilter("roomId", "=", body.roomId));
+        const [getGame, info] = await queryTakingId.run();
+        const gameId = getGame[0].gameId;
+
+        const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter("gameId", "=", gameId));
         const [move, queryInfo] = await query.run();
         const taskKey = move[0][this.datastore.KEY];
         const entity = {
