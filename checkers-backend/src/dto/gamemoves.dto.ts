@@ -20,16 +20,7 @@ export class Board {
 }
 
 export class GameMove {
-    gameMoveId: string;
-    @IsNotEmpty()
-    gameId: string;
-    @IsNotEmpty()
+    roomId: string;
     current: Board;
-}
-
-export class PositionMove extends GameMove {
-    @IsNotEmpty()
     move: string;
-    @IsNotEmpty()
-    playerId: string;
 }

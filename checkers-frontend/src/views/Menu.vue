@@ -7,7 +7,7 @@
     <template #title>BOARD</template>
     <template #content>
       <ChildComponent :roomId="roomId" />
-      <p class="m-0" v-if='!state.isCreatingRoom'>
+      
         <InputText name="BoardName" id="BoardName" v-model="boardName" aria-describedby="username-help" /><br>
         <small id="username-help">Enter board name.</small><br><br>
         <SelectButton name="SelectButton" v-model="selectColor" :options="options" aria-labelledby="basic" /><br>
@@ -15,10 +15,8 @@
         <Button name="CreateButton" class="CreateButton" label="Create" text raised
           @click="createRoom(), newRoom(), refreshRooms()"></Button>
       </div>
-      </p>
-      <p class='Waiting' v-else>
-        Waiting For Opponent
-      </p>
+      
+    
     </template>
   </Card>
 
@@ -138,7 +136,7 @@ header {
 }
 
 #Rules {
-  font-size: 1.5rem;
+  font-size: 1rem;
   float: right;
   border: 1px solid #818CF8;
   border-radius: 0 0 6px 0;
@@ -198,7 +196,6 @@ async function JoinRoom(roomId, player1Id) {
 
     window.location = `/Game/${roomId}`
 
-    console.log('Response data:', response.data);
     state.rooms = response.data;
   } catch (error) {
     console.log(error);
@@ -232,7 +229,7 @@ export default {
     return {
       rooms: [],
       messages: [],
-      socket: null // Define socket as a component property
+      socket: null 
     };
   },
 

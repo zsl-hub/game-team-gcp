@@ -10,7 +10,7 @@
       <div class="FirstPlayer">
         <label for="username"> Update your username: </label>
         <InputText id="FirstUsername" v-model="username" />
-        <Button label="Change username" @Click="UpdateUsername()"/>
+        <Button label="Change username" @Click="UpdateUsername()" />
       </div>
       <div class="Surrender">
         <Button class="SurrenderButton" aria-label="Submit" @click='surrender()'> 🏳️</Button>
@@ -85,7 +85,7 @@ main {
 .RedPiece {
   width: 5rem;
   height: 5rem;
-  background-color: red;
+  background-color: black;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -95,7 +95,7 @@ main {
 .BlackPiece {
   width: 5rem;
   height: 5rem;
-  background-color: black;
+  background-color: red;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -144,8 +144,9 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { onMounted, reactive } from 'vue';
 import io from 'socket.io-client';
+onMounted(async () => {
+  const data2 = await axios.get(`${import.meta.env.VITE_BACK_HOST}/api/v1/room/${window.location.pathname.slice(6, window.location.pathname.length)}`);
 
-onMounted(() => {
   const Board = document.getElementById("Board");
 
   let CurrentPlayer = 'red';
@@ -160,42 +161,49 @@ onMounted(() => {
     'G': Array(8).fill(0),
     'H': Array(8).fill(0)
   };
-  const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']; let MultiCapture = false;
+  const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+  let MultiCapture = false;
 
-  InitializeBoard();
+  
 
-  function InitializeBoard() {
+  
+  async function getAndPrint(){
+    const data = await axios.get(`${import.meta.env.VITE_BACK_HOST}/api/v1/gameMoves/${window.location.pathname.slice(6, window.location.pathname.length)}`);
+    await printBoard(data.data);
+    
+  }
+
+  async function printBoard(data){
+    Board.innerHTML = "";
+    const board = Object.values(data.current);
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
         const cell = document.createElement("div");
         cell.classList.add("cell");
-
-        if ((row + col) % 2 === 0) {
+        if( (row + col) % 2 == 0) {
           cell.classList.add("LightSquare");
-        } else {
+        }
+        else {
           cell.classList.add("DarkSquare");
-
-          if (row < 3) {
-            cell.classList.add("Occupied");
+        }
+        if(board[row][col] == 2){
             cell.dataset.color = 'black';
             cell.appendChild(CreatePiece('Black'));
-            GameState[letters[row]][col] = 2;
-          } else if (row > 4) {
-            cell.classList.add("Occupied");
+        }
+        if((board[row][col] == 1)){
             cell.dataset.color = 'red';
             cell.appendChild(CreatePiece('Red'));
-            GameState[letters[row]][col] = 1;
-          }
         }
-
+        GameState[letters[row]][col] = board[row][col];
         cell.dataset.row = row;
         cell.dataset.col = col;
         cell.addEventListener("click", CellClicked);
         Board.appendChild(cell);
       }
     }
-    console.log(GameState)
   }
+
+  setInterval(await getAndPrint, 5000)
 
   function CreatePiece(color) {
     const Piece = document.createElement("div");
@@ -231,14 +239,14 @@ onMounted(() => {
     }
   }
 
-  function CaptureAndCheckForPromotion(ClickedCell) {
+  async function CaptureAndCheckForPromotion(ClickedCell) {
     CapturePiece(SelectedCell, ClickedCell);
     CheckForPromotion(ClickedCell);
 
     if (IsAnotherCapturePossible(ClickedCell)) {
       SelectPiece(ClickedCell);
       MultiCapture = true;
-      HighlightPossibleMoves(ClickedCell);
+      await HighlightPossibleMoves(ClickedCell);
     }
     else {
       MultiCapture = false;
@@ -282,37 +290,40 @@ onMounted(() => {
       ? Math.abs(fromRow - toRow) === 1 && Math.abs(fromCol - toCol) === 1 && GameState[letters[toRow]][toCol] === 0
       : fromRow + direction === toRow && Math.abs(fromCol - toCol) === 1 && GameState[letters[toRow]][toCol] === 0;
   }
-
-  function MovePiece(fromCell, toCell) {
+  function convertTo32Grid(row, col) {
+    return row * 4 + Math.floor(col / 2) + 1;
+}
+  async function MovePiece(fromCell, toCell) {
     const fromRow = parseInt(fromCell.dataset.row);
     const fromCol = parseInt(fromCell.dataset.col);
     const toRow = parseInt(toCell.dataset.row);
     const toCol = parseInt(toCell.dataset.col);
 
-    const isKing = fromCell.firstChild.classList.contains('King');
+    // const fromCell32 = convertTo32Grid(fromRow, fromCol);
+    // const toCell32 = convertTo32Grid(toRow, toCol);
+    
 
+
+    const isKing = fromCell.firstChild.classList.contains('King');
     fromCell.innerHTML = '';
     fromCell.classList.remove('Occupied');
     fromCell.dataset.color = '';
     GameState[letters[fromRow]][fromCol] = 0;
-
     const newPiece = CreatePiece(CurrentPlayer.charAt(0).toUpperCase() + CurrentPlayer.slice(1));
-
     if (isKing) newPiece.classList.add('King');
     toCell.appendChild(newPiece);
     toCell.classList.add('Occupied');
     toCell.dataset.color = CurrentPlayer;
     GameState[letters[toRow]][toCol] = isKing ? (CurrentPlayer === 'black' ? 4 : 3) : (CurrentPlayer === 'black' ? 2 : 1);
-
-    const socket = io(import.meta.env.VITE_BACK_HOST);
-    console.log("testing move");
-    socket.emit('boardData', {
-      msg: 'trying to send board',
-      board: Board
-    });
+    
 
     UnSelectPiece();
     ClearHighlightedMoves();
+
+    
+    
+
+    
   }
 
   function SwitchPlayer() {
@@ -395,9 +406,17 @@ onMounted(() => {
     return false;
   }
 
-  function HighlightPossibleMoves(cell) {
+  async function HighlightPossibleMoves(cell) {
     const row = parseInt(cell.dataset.row);
     const col = parseInt(cell.dataset.col);
+
+
+    let Move = `10:14 `
+    const response = await axios.post(import.meta.env.VITE_BACK_HOST + '/api/v1/makeMove', {
+      roomId: window.location.pathname.slice(6, window.location.pathname.length),
+      current: GameState,
+      move: Move,
+    });
 
     if (MultiCapture) {
       const captureDirections = [[2, 2], [2, -2], [-2, 2], [-2, -2]];
@@ -468,24 +487,24 @@ export default {
   },
 
   methods: {
-    async UpdateUsername(){
+    async UpdateUsername() {
       const searchParams = new URLSearchParams(window.location.search);
       const url = window.location.pathname;
       const parts = url.split('/');
       const lastPart = parts[parts.length - 1];
       console.log($cookies.get('playerId'));
-      const response = await axios.put(import.meta.env.VITE_BACK_HOST +  '/api/v1/renameUser', {
-          roomId: lastPart,
-          userName: this.username,
-          userId: $cookies.get('playerId')
-        });
+      const response = await axios.put(import.meta.env.VITE_BACK_HOST + '/api/v1/renameUser', {
+        roomId: lastPart,
+        userName: this.username,
+        userId: $cookies.get('playerId')
+      });
       const name = await axios.get(import.meta.env.VITE_BACK_HOST + `/api/v1/Game/getName/${lastPart}`);
       console.log(name)
     },
 
     async surrender() {
       const roomId = this.$route.params.id;
-      console.log('Room ID:', roomId);
+      
 
       try {
         await axios.delete(import.meta.env.VITE_BACK_HOST + `/api/v1/Game/${roomId}`);

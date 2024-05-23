@@ -1,10 +1,10 @@
 import { OtherRoutesRepository } from "../repository/otherroutes.repository"
 import { Room } from "../dto/room.dto"
 import { Body, Injectable } from "@nestjs/common";
-import { PositionMove } from "../dto/gamemoves.dto";
 import { start } from "repl";
 import { User } from "../dto/user.dto";
 import { elementAt } from "rxjs";
+import { GameMove } from "src/dto/gamemoves.dto";
 
 @Injectable()
 export class OtherRoutesService {
@@ -55,7 +55,8 @@ export class OtherRoutesService {
         return 0;
     }
 
-    async makeMove(@Body() body: PositionMove): Promise<string> {
+    async makeMove(@Body() body: GameMove): Promise<string> {
+        console.log(body)
         const tab = body.move.split(":");
         const collIndex = [[7, 1, 3, 5], [6, 0, 2, 4]]
         let board = Object.keys(body.current).map((key) => body.current[key])
