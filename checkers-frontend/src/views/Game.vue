@@ -5,7 +5,7 @@
       <input type="text" name="Content" id="content" maxlength="20">
       <input type="Submit" value="Send">
     </div>
-    <div class="Board" id="Board"></div>
+    <div class="Board" id="Board" @load="init-board"></div>
     <div class="Options">
       <div class="FirstPlayer">
         <label for="username">1 Player: </label>
@@ -140,170 +140,188 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { onMounted, reactive } from 'vue';
 import io from 'socket.io-client';
-
-onMounted(() => {
-  const Board = document.getElementById("Board");
-
+import axios from 'axios';
+onMounted(async () => {
+  let Board = document.getElementById("Board");
   let CurrentPlayer = 'red';
   let SelectedCell = null;
-  let GameState = Array(8).fill().map(() => Array(8).fill(0));
+
+  let GameState = {
+    'H': Array(8).fill(0),
+    'G': Array(8).fill(0),
+    'F': Array(8).fill(0),
+    'E': Array(8).fill(0),
+    'D': Array(8).fill(0),
+    'C': Array(8).fill(0),
+    'B': Array(8).fill(0),
+    'A': Array(8).fill(0)
+  };
+  const letters = ['H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'];
   let MultiCapture = false;
+  const data2 = await axios.get(`${import.meta.env.VITE_BACK_HOST}/api/v1/room/${window.location.pathname.slice(6, window.location.pathname.length)}`);
+  console.log(data2)
 
-  InitializeBoard();
+  async function getAndPrint(){
+    const data = await axios.get(`${import.meta.env.VITE_BACK_HOST}/api/v1/gameMoves/${window.location.pathname.slice(6, window.location.pathname.length)}`);
+    await printBoard(data.data);
+  }
 
-  function InitializeBoard() {
+  setInterval(getAndPrint, 5000);
+
+  async function printBoard(data){
+    Board.innerHTML = ""; 
+    const board = Object.values(data.current);
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
         const cell = document.createElement("div");
         cell.classList.add("cell");
-
-        if ((row + col) % 2 === 0) {
+        if( (row + col) % 2 == 0) {
           cell.classList.add("LightSquare");
-        } else {
+        } 
+        else {
           cell.classList.add("DarkSquare");
-
-          if (row < 3) {
-            cell.classList.add("Occupied");
-            cell.dataset.color = 'black';
-            cell.appendChild(CreatePiece('Black'));
-            GameState[row][col] = 2;
-          } else if (row > 4) {
-            cell.classList.add("Occupied");
-            cell.dataset.color = 'red';
-            cell.appendChild(CreatePiece('Red'));
-            GameState[row][col] = 1;
-          }
         }
 
+        if(board[row][col] == 2){
+            cell.dataset.color = 'black';
+            cell.appendChild(CreatePiece('Black'));
+        }
+        if((board[row][col] == 1)){
+            cell.dataset.color = 'red';
+            cell.appendChild(CreatePiece('Red'));
+            GameState[letters[row]][col] = board[row][col];
+        }
+        
         cell.dataset.row = row;
         cell.dataset.col = col;
         cell.addEventListener("click", CellClicked);
         Board.appendChild(cell);
       }
     }
-    console.log(GameState)
   }
-
   function CreatePiece(color) {
     const Piece = document.createElement("div");
     Piece.classList.add("Piece");
     Piece.classList.add(color + "Piece");
     return Piece;
   }
-
-  function CellClicked() {
+  async function CellClicked() {
     const ClickedCell = this;
-
     if (SelectedCell) {
-      if (IsMoveAllowed(SelectedCell, ClickedCell)) {
-        if (!MultiCapture) {
-          MovePiece(SelectedCell, ClickedCell);
-          CheckForPromotion(ClickedCell);
-          SwitchPlayer();
-        }
-      } else if (IsCaptureAllowed(SelectedCell, ClickedCell)) {
-        CapturePiece(SelectedCell, ClickedCell);
-        CheckForPromotion(ClickedCell);
+      console.log("2")
+      HandleSelectedCell(ClickedCell);
+    }
+    else if (ClickedCell.dataset.color === CurrentPlayer) {
+      console.log("1")
+      SelectPiece(ClickedCell);
+    }
 
-        if (IsAnotherCapturePossible(ClickedCell)) {
-          SelectPiece(ClickedCell);
-          MultiCapture = true;
-        } else {
-          MultiCapture = false;
-          SwitchPlayer();
-        }
-      } else if (!MultiCapture && ClickedCell.dataset.color === CurrentPlayer) {
-        SelectPiece(ClickedCell);
-      }
-    } else if (ClickedCell.dataset.color === CurrentPlayer) {
+    const response = await axios.post(import.meta.env.VITE_BACK_HOST + '/api/v1/makeMove/', {
+      gameId: window.location.pathname.slice(6, window.location.pathname.length),
+      current: GameState,
+      move:"10:14"
+    });
+  }
+
+  function HandleSelectedCell(ClickedCell) {
+    if (IsCaptureAllowed(SelectedCell, ClickedCell)) {
+      CaptureAndCheckForPromotion(ClickedCell);
+      return;
+    }
+    if (!MultiCapture && IsMoveAllowed(SelectedCell, ClickedCell)) {
+      MovePieceAndCheckForPromotion(ClickedCell);
+      return;
+    }
+    if (!MultiCapture && ClickedCell.dataset.color === CurrentPlayer) {
       SelectPiece(ClickedCell);
     }
   }
-
+  function CaptureAndCheckForPromotion(ClickedCell) {
+    CapturePiece(SelectedCell, ClickedCell);
+    CheckForPromotion(ClickedCell);
+    if (IsAnotherCapturePossible(ClickedCell)) {
+      SelectPiece(ClickedCell);
+      MultiCapture = true;
+      HighlightPossibleMoves(ClickedCell);
+    }
+    else {
+      MultiCapture = false;
+      SwitchPlayer();
+    }
+  }
+  function MovePieceAndCheckForPromotion(ClickedCell) {
+    MovePiece(SelectedCell, ClickedCell);
+    CheckForPromotion(ClickedCell);
+    SwitchPlayer();
+  }
   function UnSelectPiece() {
     if (SelectedCell) {
       SelectedCell.classList.remove("Selected");
       SelectedCell = null;
     }
   }
-
   function SelectPiece(cell) {
     UnSelectPiece();
     cell.classList.add("Selected");
     SelectedCell = cell;
   }
-
   function IsMoveAllowed(fromCell, toCell) {
     const direction = CurrentPlayer === 'red' ? -1 : 1;
     const fromRow = parseInt(fromCell.dataset.row);
     const toRow = parseInt(toCell.dataset.row);
     const fromCol = parseInt(fromCell.dataset.col);
     const toCol = parseInt(toCell.dataset.col);
-
     const isKing = fromCell.firstChild.classList.contains('King');
-
     return isKing
-      ? Math.abs(fromRow - toRow) === 1 && Math.abs(fromCol - toCol) === 1 && GameState[toRow][toCol] === 0
-      : fromRow + direction === toRow && Math.abs(fromCol - toCol) === 1 && GameState[toRow][toCol] === 0;
+      ? Math.abs(fromRow - toRow) === 1 && Math.abs(fromCol - toCol) === 1 && GameState[letters[toRow]][toCol] === 0
+      : fromRow + direction === toRow && Math.abs(fromCol - toCol) === 1 && GameState[letters[toRow]][toCol] === 0;
   }
-
   function MovePiece(fromCell, toCell) {
     const fromRow = parseInt(fromCell.dataset.row);
     const fromCol = parseInt(fromCell.dataset.col);
     const toRow = parseInt(toCell.dataset.row);
     const toCol = parseInt(toCell.dataset.col);
-
     const isKing = fromCell.firstChild.classList.contains('King');
-
     fromCell.innerHTML = '';
     fromCell.classList.remove('Occupied');
     fromCell.dataset.color = '';
-    GameState[fromRow][fromCol] = 0;
-
+    GameState[letters[fromRow]][fromCol] = 0;
     const newPiece = CreatePiece(CurrentPlayer.charAt(0).toUpperCase() + CurrentPlayer.slice(1));
-
     if (isKing) newPiece.classList.add('King');
     toCell.appendChild(newPiece);
     toCell.classList.add('Occupied');
     toCell.dataset.color = CurrentPlayer;
-    GameState[toRow][toCol] = isKing ? (CurrentPlayer === 'black' ? 4 : 3) : (CurrentPlayer === 'black' ? 2 : 1);
-
-    const socket = io(import.meta.env.VITE_BACK_HOST);
-    console.log("testing move");
-    socket.emit('boardData', {
-      msg: 'trying to send board',
-      board: Board
-    });
-
+    GameState[letters[toRow]][toCol] = isKing ? (CurrentPlayer === 'black' ? 4 : 3) : (CurrentPlayer === 'black' ? 2 : 1);
+    // const socket = io(import.meta.env.VITE_BACK_HOST);
+    // console.log("testing move");
+    // socket.emit('boardData', {
+    //   msg: 'trying to send board',
+    //   board: Board
+    // });
     UnSelectPiece();
   }
-
   function SwitchPlayer() {
-    CurrentPlayer = CurrentPlayer === 'red' ? 'black' : 'red';
+    if (!MultiCapture) {
+      CurrentPlayer = CurrentPlayer === 'red' ? 'black' : 'red';
+    }
   }
-
   function IsCaptureAllowed(fromCell, toCell) {
     const fromRow = parseInt(fromCell.dataset.row);
     const toRow = parseInt(toCell.dataset.row);
     const fromCol = parseInt(fromCell.dataset.col);
     const toCol = parseInt(toCell.dataset.col);
-
     const direction = CurrentPlayer === 'red' ? -1 : 1;
     const isKing = fromCell.firstChild.classList.contains('King');
-
     if (Math.abs(fromRow - toRow) === 2 && Math.abs(fromCol - toCol) === 2) {
       const capturedRow = (fromRow + toRow) / 2;
       const capturedCol = (fromCol + toCol) / 2;
-
       if (!isKing && direction !== (toRow - fromRow) / Math.abs(toRow - fromRow)) {
         return false;
       }
-
-      return GameState[capturedRow][capturedCol] !== 0 && GameState[capturedRow][capturedCol] !== (CurrentPlayer === 'red' ? 1 : 2) && GameState[toRow][toCol] === 0;
+      return GameState[letters[capturedRow]][capturedCol] !== 0 && GameState[letters[capturedRow]][capturedCol] !== (CurrentPlayer === 'red' ? 1 : 2) && GameState[letters[toRow]][toCol] === 0;
     }
     return false;
   }
-
   function CapturePiece(fromCell, toCell) {
     const capturedRow = (parseInt(fromCell.dataset.row) + parseInt(toCell.dataset.row)) / 2;
     const capturedCol = (parseInt(fromCell.dataset.col) + parseInt(toCell.dataset.col)) / 2;
@@ -311,40 +329,36 @@ onMounted(() => {
     capturedCell.innerHTML = '';
     capturedCell.classList.remove('Occupied');
     capturedCell.dataset.color = '';
-    GameState[capturedRow][capturedCol] = 0;
-
+    GameState[letters[capturedRow]][capturedCol] = 0;
     MovePiece(fromCell, toCell);
   }
-
   function CheckForPromotion(cell) {
     const row = parseInt(cell.dataset.row);
     if ((CurrentPlayer === 'red' && row === 0) || (CurrentPlayer === 'black' && row === 7)) {
       cell.firstChild.classList.add('King');
-      GameState[row][parseInt(cell.dataset.col)] = CurrentPlayer === 'black' ? 4 : 3;
+      GameState[letters[row]][parseInt(cell.dataset.col)] = CurrentPlayer === 'black' ? 4 : 3;
     }
   }
-
   function IsAnotherCapturePossible(cell) {
     const row = parseInt(cell.dataset.row);
     const col = parseInt(cell.dataset.col);
-
     const directions = [
       [2, 2], [2, -2], [-2, 2], [-2, -2]
     ];
-
     const isKing = cell.firstChild.classList.contains('King');
-    const playerPiece = GameState[row][col];
-
+    const playerPiece = GameState[letters[row]][col];
     for (const [dx, dy] of directions) {
       const newRow = row + dx;
       const newCol = col + dy;
       if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
         const midRow = (row + newRow) / 2;
         const midCol = (col + newCol) / 2;
+        const targetCellColor = GameState[letters[midRow]][midCol];
         if (
-          GameState[newRow][newCol] === 0 &&
-          GameState[midRow][midCol] !== 0 &&
-          GameState[midRow][midCol] !== playerPiece &&
+          GameState[letters[newRow]][newCol] === 0 &&
+          targetCellColor !== 0 &&
+          targetCellColor !== (CurrentPlayer === 'red' ? 1 : 2) &&
+          targetCellColor !== (CurrentPlayer === 'red' ? 3 : 4) &&
           (isKing || (CurrentPlayer === 'red' ? dx < 0 : dx > 0))
         ) {
           return true;
@@ -354,38 +368,4 @@ onMounted(() => {
     return false;
   }
 });
-
-</script>
-
-<script>
-import axios from 'axios';
-import { store } from './store.js';
-
-export default {
-  data() {
-    return {
-
-    };
-  },
-
-  methods: {
-    async surrender() {
-      console.log('Room ID:', store.roomId);
-
-      try {
-        await axios.delete(import.meta.env.VITE_BACK_HOST + `/api/v1/game/${store.roomId}`);
-
-        setTimeout(() => {
-          this.$router.push('/');
-        }, 7000);
-      } catch (error) {
-        console.error(error);
-      }
-    },
-
-
-  },
-
-
-};
 </script>

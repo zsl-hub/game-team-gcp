@@ -12,7 +12,12 @@ export class GameMovesRepository {
     }
 
     async findOne(id: string): Promise<GameMove> {
-        const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter(("gameMoveId"), "=", id))
+        const queryTakingId = this.datastore.createQuery("game").filter(new PropertyFilter("roomId", "=", id));
+        const [getGame, info] = await queryTakingId.run();
+        const gameId = getGame[0].gameId;
+
+
+        const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter(("gameId"), "=", gameId))
         const [gameMoves, queryInfo] = await query.run();
         return gameMoves[0];
     }
