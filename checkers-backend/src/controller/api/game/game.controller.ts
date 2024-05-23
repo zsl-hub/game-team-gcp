@@ -15,7 +15,11 @@ export class GameController {
     async findOne(@Param('id') id: string): Promise<Game> {
         return await this.gameService.findOne(id);
     }
-
+    
+    @Get("/getName/:id")
+    async findOneName(@Param('id') id: string): Promise<Object> {
+        return await this.gameService.findOneName(id);
+    }
 
     @Post()
     async add(@Body() body: Game): Promise<string> {
