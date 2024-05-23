@@ -1,6 +1,6 @@
 import { Datastore, PropertyFilter } from '@google-cloud/datastore';
 import { Room } from '../dto/room.dto'
-import { PositionMove } from "../dto/gamemoves.dto"
+import { GameMove } from "../dto/gamemoves.dto"
 import { Body } from '@nestjs/common';
 import { User } from '../dto/user.dto';
 
@@ -32,8 +32,8 @@ export class OtherRoutesRepository {
         return 1;
     }
 
-    async makeMove(@Body() body: PositionMove): Promise<string> {
-        const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter("gameId", "=", body.gameId));
+    async makeMove(@Body() body: GameMove): Promise<string> {
+        const query = this.datastore.createQuery("gameMove").filter(new PropertyFilter("roomId", "=", body.roomId));
         const [move, queryInfo] = await query.run();
         const taskKey = move[0][this.datastore.KEY];
         const entity = {

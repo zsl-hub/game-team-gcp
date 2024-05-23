@@ -1,6 +1,6 @@
 import { BadRequestException, Body, Controller, Get, InternalServerErrorException, Param, Post, Put } from "@nestjs/common";
 import { Room } from "../../../dto/room.dto"
-import { GameMove, Board, PositionMove } from "../../../dto/gamemoves.dto"
+import { GameMove, Board } from "../../../dto/gamemoves.dto"
 import { OtherRoutesService } from "../../../service/otherroutes.service"
 import { User } from "../../../dto/user.dto";
 
@@ -16,7 +16,7 @@ export class OtherRoutesController {
     }
 
     @Post("/makeMove")
-    async makeMove(@Body() body: PositionMove): Promise<string> {
+    async makeMove(@Body() body: GameMove): Promise<string> {
         const response = await this.otherRoutesService.makeMove(body);
         if (response == "RedWon") { return "Red"; }
         if (response == "BlackWon") { return "Black"; }
