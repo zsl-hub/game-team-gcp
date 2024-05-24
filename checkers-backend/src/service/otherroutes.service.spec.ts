@@ -128,8 +128,7 @@ describe("Game", () => {
 
     describe('BasicMove', () => {
         it('Expect 1', async () => {
-            const data = {
-                current: {
+            const current = {
                     "H": [2, 0, 2, 0, 2, 0, 2, 0],
                     "G": [0, 2, 0, 2, 0, 2, 0, 2],
                     "F": [2, 0, 2, 0, 2, 0, 2, 0],
@@ -138,21 +137,18 @@ describe("Game", () => {
                     "C": [0, 1, 0, 1, 0, 1, 0, 1],
                     "B": [1, 0, 1, 0, 1, 0, 1, 0],
                     "A": [0, 1, 0, 1, 0, 1, 0, 1]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "22:18",
-                playerId: "someid"
             };
-            const result = await controller.makeMove(data);
+            const move = "22:18";
+            
+            const result = await service.checkMove(current, move);
             expect(result).toBe("Accepted");
         });
     });
 
     describe('BasicMove', () => {
         it('Expect 1', async () => {
-            const data = {
-                current: {
+            
+                const current = {
                     "H": [2, 0, 2, 0, 2, 0, 2, 0],
                     "G": [0, 2, 0, 2, 0, 2, 0, 2],
                     "F": [2, 0, 2, 0, 2, 0, 2, 0],
@@ -161,21 +157,17 @@ describe("Game", () => {
                     "C": [0, 1, 0, 1, 0, 1, 0, 1],
                     "B": [1, 0, 1, 0, 1, 0, 1, 0],
                     "A": [0, 1, 0, 1, 0, 1, 0, 1]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "9:14",
-                playerId: "someid"
-            };
-            const result = await controller.makeMove(data);
+                };
+                const move = "9:14";
+            const result = await service.checkMove(current, move);;
             expect(result).toBe("Accepted");
         });
     });
 
     describe('Take in the corner, Queens', () => {
         it('Expected 0', async () => {
-            const data = {
-                current: {
+            
+                const current = {
                     "A": [0, 0, 0, 0, 0, 0, 0, 0],
                     "B": [0, 0, 0, 0, 0, 0, 0, 0],
                     "C": [0, 0, 0, 0, 0, 0, 0, 0],
@@ -184,21 +176,17 @@ describe("Game", () => {
                     "F": [0, 0, 0, 0, 0, 0, 0, 0],
                     "G": [0, 4, 0, 0, 0, 0, 0, 0],
                     "H": [3, 0, 0, 0, 0, 0, 0, 0]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "29:22",
-                playerId: "someid"
-            };
-            const result = await controller.makeMove(data);
+                };
+                const move = "29:22";
+            const result = await service.checkMove(current, move);;
             expect(result).toBe("Accepted");
         });
     });
 
     describe('Take in the corner, Queens', () => {
         it('Expected 1', async () => {
-            const data = {
-                current: {
+            
+                const current = {
                     "A": [0, 0, 0, 0, 0, 0, 0, 0],
                     "B": [0, 0, 0, 0, 0, 0, 0, 0],
                     "C": [0, 0, 0, 0, 0, 0, 0, 0],
@@ -207,21 +195,17 @@ describe("Game", () => {
                     "F": [0, 0, 0, 0, 0, 0, 0, 0],
                     "G": [0, 3, 0, 0, 0, 0, 0, 0],
                     "H": [4, 0, 0, 0, 0, 0, 0, 0]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "29:22",
-                playerId: "someid"
-            };
-            const result = await controller.makeMove(data);
+                };
+                const move = "29:22";
+            const result = await service.checkMove(current, move);;
             expect(result).toBe("Accepted");
         });
     });
 
     describe('Take in the corner, Queens', () => {
         it('Expected 1', async () => {
-            const data = {
-                current: {
+            
+                const current = {
                     "A": [0, 0, 0, 0, 0, 0, 0, 3],
                     "B": [0, 0, 0, 0, 0, 0, 4, 0],
                     "C": [0, 0, 0, 0, 0, 0, 0, 0],
@@ -230,21 +214,17 @@ describe("Game", () => {
                     "F": [0, 0, 0, 0, 0, 0, 0, 0],
                     "G": [0, 3, 0, 0, 0, 0, 0, 0],
                     "H": [4, 0, 0, 0, 0, 0, 0, 0]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "4:11",
-                playerId: "someid"
-            };
-            const result = await controller.makeMove(data);
+                };
+                const move = "4:11";
+            const result = await service.checkMove(current, move);;
             expect(result).toBe("Accepted");
         });
     });
 
     describe('Take in the corner, Queens', () => {
         it('Expected 1', async () => {
-            const data = {
-                current: {
+            
+                const current = {
                     "A": [0, 0, 0, 0, 0, 0, 0, 3],
                     "B": [0, 0, 0, 0, 0, 0, 4, 0],
                     "C": [0, 0, 0, 0, 0, 0, 0, 0],
@@ -253,21 +233,17 @@ describe("Game", () => {
                     "F": [0, 0, 0, 0, 0, 0, 4, 0],
                     "G": [0, 3, 0, 0, 0, 3, 0, 3],
                     "H": [4, 0, 0, 0, 0, 0, 4, 0]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "32:23",
-                playerId: "someid"
-            };
-            const result = await controller.makeMove(data);
+                };
+                const move = "32:23";
+            const result = await service.checkMove(current, move);;
             expect(result).toBe("Accepted");
         });
     });
 
     describe('Take in the corner, Queens', () => {
         it('Expected 1', async () => {
-            const data = {
-                current: {
+            
+                const current = {
                     "A": [0, 0, 0, 0, 0, 0, 0, 3],
                     "B": [0, 0, 0, 0, 0, 0, 4, 0],
                     "C": [0, 0, 0, 0, 0, 0, 0, 0],
@@ -276,21 +252,17 @@ describe("Game", () => {
                     "F": [0, 0, 0, 0, 0, 0, 4, 0],
                     "G": [0, 3, 0, 0, 0, 3, 0, 3],
                     "H": [4, 0, 0, 0, 0, 0, 4, 0]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "28:19",
-                playerId: "someid"
-            };
-            const result = await controller.makeMove(data);
+                };
+                const move = "28:19";
+            const result = await service.checkMove(current, move);;
             expect(result).toBe("Accepted");
         });
     });
 
     describe('Take in the corner', () => {
         it('Expected 1', async () => {
-            const data = {
-                current: {
+            
+                const current = {
                     "A": [0, 2, 0, 0, 0, 0, 0, 3],
                     "B": [1, 0, 1, 0, 0, 0, 4, 0],
                     "C": [0, 2, 0, 0, 0, 0, 0, 0],
@@ -299,21 +271,17 @@ describe("Game", () => {
                     "F": [0, 0, 0, 0, 0, 0, 4, 0],
                     "G": [0, 3, 0, 0, 0, 3, 0, 3],
                     "H": [4, 0, 0, 0, 0, 0, 4, 0]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "1:10",
-                playerId: "someid"
-            };
-            const result = await controller.makeMove(data);
+                };
+                const move = "1:10";
+            const result = await service.checkMove(current, move);;
             expect(result).toBe("Accepted");
         });
     });
 
     describe('Take in the corner', () => {
         it('Expected 1', async () => {
-            const data = {
-                current: {
+            
+                const current = {
                     "A": [0, 2, 0, 0, 0, 0, 0, 3],
                     "B": [1, 0, 1, 0, 0, 0, 4, 0],
                     "C": [0, 2, 0, 0, 0, 0, 0, 0],
@@ -322,21 +290,17 @@ describe("Game", () => {
                     "F": [0, 0, 0, 0, 0, 0, 4, 0],
                     "G": [0, 3, 0, 0, 0, 3, 0, 3],
                     "H": [4, 0, 0, 0, 0, 0, 4, 0]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "5:14",
-                playerId: "someid"
-            };
-            const result = await controller.makeMove(data);
+                };
+                const move = "5:14";
+            const result = await service.checkMove(current, move);;
             expect(result).toBe("Accepted");
         });
     });
 
     describe('Take in the corner', () => {
         it('Expected 1', async () => {
-            const data = {
-                current: {
+            
+                const current = {
                     "A": [0, 0, 0, 0, 0, 0, 0, 3],
                     "B": [0, 0, 1, 0, 0, 0, 4, 0],
                     "C": [0, 2, 0, 2, 0, 0, 0, 0],
@@ -345,21 +309,17 @@ describe("Game", () => {
                     "F": [0, 0, 0, 0, 0, 0, 4, 0],
                     "G": [0, 3, 0, 0, 0, 3, 0, 3],
                     "H": [4, 0, 0, 0, 0, 0, 4, 0]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "14:5",
-                playerId: "someid"
-            };
-            const result = await controller.makeMove(data);
+                };
+                const move = "14:5";
+            const result = await service.checkMove(current, move);;
             expect(result).toBe("Accepted");
         });
     });
 
     describe('Game over', () => {
         it('Expected 1', async () => {
-            const data = {
-                current: {
+            
+                const current = {
                     "A": [0, 0, 0, 0, 0, 0, 0, 0],
                     "B": [0, 0, 0, 0, 0, 0, 4, 0],
                     "C": [0, 0, 0, 0, 0, 0, 0, 0],
@@ -368,21 +328,17 @@ describe("Game", () => {
                     "F": [0, 0, 0, 0, 0, 0, 0, 0],
                     "G": [0, 0, 0, 0, 0, 0, 0, 0],
                     "H": [4, 0, 0, 0, 0, 0, 0, 0]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "",
-                playerId: "someid"
-            };
-            const result = await controller.makeMove(data);
-            expect(result).toBe("Red");
+                };
+                const move = "";
+            const result = await service.checkMove(current, move);;
+            expect(result).toBe("RedWon");
         });
     });
 
     describe('Game over', () => {
         it('Expected 1', async () => {
-            const data = {
-                current: {
+            
+                const current = {
                     "A": [0, 0, 0, 0, 0, 0, 0, 0],
                     "B": [0, 0, 0, 0, 0, 0, 3, 0],
                     "C": [0, 0, 0, 0, 0, 0, 0, 0],
@@ -391,14 +347,10 @@ describe("Game", () => {
                     "F": [0, 0, 0, 0, 0, 0, 0, 0],
                     "G": [0, 0, 0, 0, 0, 0, 0, 0],
                     "H": [3, 0, 0, 0, 0, 0, 0, 0]
-                },
-                gameId: "someid",
-                gameMoveId: "someid",
-                move: "",
-                playerId: "someid"
-            };
-            const result = await controller.makeMove(data);
-            expect(result).toBe("Black");
+                };
+                const move = "";
+            const result = await service.checkMove(current, move);;
+            expect(result).toBe("BlackWon");
         });
     });
 })

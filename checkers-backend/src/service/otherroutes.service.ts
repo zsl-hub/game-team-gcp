@@ -1,10 +1,8 @@
 import { OtherRoutesRepository } from "../repository/otherroutes.repository"
 import { Room } from "../dto/room.dto"
 import { Body, Injectable } from "@nestjs/common";
-import { start } from "repl";
 import { User } from "../dto/user.dto";
-import { elementAt } from "rxjs";
-import { GameMove } from "src/dto/gamemoves.dto";
+import { GameMove } from "../dto/gamemoves.dto";
 
 @Injectable()
 export class OtherRoutesService {
@@ -56,11 +54,19 @@ export class OtherRoutesService {
     }
 
     async makeMove(@Body() body: GameMove): Promise<string> {
-        console.log(body)
-        const tab = body.move.split(":");
+        const possible = await this.checkMove(body.current, body.move);
+        if(possible != "Accepted"){return possible;}
+        await this.OtherRoutesRepository.makeMove(body);
+        return "Accepted"
+    }
+
+    async checkMove(boardObj, move)
+    {
+        console.log(boardObj)
+        const tab = move.split(":");
         const collIndex = [[7, 1, 3, 5], [6, 0, 2, 4]]
-        let board = Object.keys(body.current).map((key) => body.current[key])
-        if (Object.keys(body.current)[0] != "A") { board.reverse() }
+        let board = Object.keys(boardObj).map((key) => boardObj[key])
+        if (Object.keys(boardObj)[0] != "A") { board.reverse() }
 
         if (board.find(element => element.find(ele => ele == 2 || ele == 4)) === undefined) { return "BlackWon"; }
         if (board.find(element => element.find(ele => ele == 1 || ele == 3)) === undefined) { return "RedWon"; }
@@ -71,12 +77,10 @@ export class OtherRoutesService {
         const startValue = board[startRow][startColl];
         const otherPieceType = (startValue == 3 || startValue == 4) ? startValue - 2 : startValue + 2;
 
-        // console.log("Start Value: ", startValue, " Row: ", startRow, " Coll: ", startColl, " Start: ", start)
         const end = parseInt(tab[1]);
         const endRow = Math.ceil(end / 4) - 1;
         const endColl = collIndex[endRow % 2][end % 4]
         const endValue = board[endRow][endColl];
-        // console.log("End Value: ", endValue, " Row: ", endRow, " Coll: ", endColl, " End: ", end)
 
         if (await this.checkQueen(startValue, endValue)) { return "There was a queen there"; }
         if (await this.checkRange(start, end)) { return "Move out of range"; }
@@ -98,7 +102,6 @@ export class OtherRoutesService {
         }
         board[endRow][endColl] = startValue;
         board[startRow][startColl] = 0;
-        console.log(board)
-        return await this.OtherRoutesRepository.makeMove(body);
+        return "Accepted"
     }
 }
